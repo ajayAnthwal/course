@@ -119,3 +119,79 @@ export interface CollegeFilters {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
+
+export interface Course {
+  _id: string;
+  name: string;
+  slug: string;
+  shortName: string;
+  description: string;
+  image?: string;
+  category: string;
+  level: "undergraduate" | "postgraduate" | "diploma" | "doctorate" | "certificate";
+  duration: string;
+  durationYears: number;
+  eligibility: string;
+  admissionProcess: string;
+  syllabus: { semester: string; subjects: string[] }[];
+  careerOpportunities: string[];
+  averageSalary: { min: number; max: number; currency: string };
+  topRecruiters: string[];
+  fees: { min: number; max: number; currency: string };
+  entranceExams: string[];
+  specializations: string[];
+  collegeCount: number;
+  rating: number;
+  featured: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Exam {
+  _id: string;
+  name: string;
+  slug: string;
+  fullName: string;
+  description: string;
+  image?: string;
+  category: string;
+  level: "national" | "state" | "university";
+  conductingBody: string;
+  mode: "computer-based" | "pen-paper" | "both";
+  frequency: string;
+  eligibility: string;
+  syllabus: { subject: string; topics: string[] }[];
+  examPattern: { section: string; questions: number; marks: number; duration: string }[];
+  importantDates: { event: string; date: string }[];
+  registrationFee: { amount: number; currency: string };
+  website?: string;
+  applicants: string;
+  totalMarks: number;
+  duration: string;
+  languages: string[];
+  rating: number;
+  featured: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NewsArticle {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image?: string;
+  category: string;
+  author: string;
+  authorAvatar?: string;
+  tags: string[];
+  readTime: string;
+  featured: boolean;
+  isActive: boolean;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}

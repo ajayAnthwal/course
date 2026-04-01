@@ -21,9 +21,7 @@ const navItems: Record<UserRole, NavItem[]> = {
   ],
   student: [
     { label: "Overview", href: "/dashboard/student", icon: "📊" },
-    { label: "My Applications", href: "/dashboard/student/applications", icon: "📝" },
-    { label: "Saved Colleges", href: "/dashboard/student/saved", icon: "❤️" },
-    { label: "Compare", href: "/dashboard/student/compare", icon: "⚖️" },
+    { label: "My Enquiries", href: "/dashboard/student/enquiries", icon: "📋" },
     { label: "Profile", href: "/dashboard/student/profile", icon: "👤" },
   ],
   college: [

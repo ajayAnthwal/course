@@ -7,7 +7,11 @@ import errorHandler from "./middlewares/errorHandler";
 import authRoutes from "./modules/auth/route/auth.route";
 import userRoutes from "./modules/user/route/user.route";
 import collegeRoutes from "./modules/college/route/college.route";
+import courseRoutes from "./modules/course/route/course.route";
+import examRoutes from "./modules/exam/route/exam.route";
+import newsRoutes from "./modules/news/route/news.route";
 import leadRoutes from "./modules/lead/route/lead.route";
+import paymentRoutes from "./modules/payment/route/payment.route";
 import AppError from "./utils/appError";
 
 const app = express();
@@ -32,7 +36,11 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/colleges", collegeRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/exams", examRoutes);
+app.use("/api/news", newsRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // 404 handler
 app.all("*", (req, _res, next) => {

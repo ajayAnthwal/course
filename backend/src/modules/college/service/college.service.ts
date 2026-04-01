@@ -36,8 +36,7 @@ class CollegeService {
     if (query.featured) filter.featured = query.featured === "true";
 
     if (query.minFees || query.maxFees) {
-      filter["courses.fees.min"] = {};
-      if (query.minFees) filter["courses.fees.min"].$gte = parseInt(query.minFees, 10);
+      if (query.minFees) filter["courses.fees.min"] = { $gte: parseInt(query.minFees, 10) };
       if (query.maxFees) filter["courses.fees.max"] = { $lte: parseInt(query.maxFees, 10) };
     }
 

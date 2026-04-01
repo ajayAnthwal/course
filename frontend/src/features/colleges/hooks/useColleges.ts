@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { collegeService } from "../services/college.service";
-import type { CollegeFilters } from "@/types";
+import type { College, CollegeFilters } from "@/types";
 
 export function useColleges(filters: CollegeFilters = {}) {
   return useQuery({

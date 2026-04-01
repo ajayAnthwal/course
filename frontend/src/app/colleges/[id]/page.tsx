@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useCollege } from "@/features/colleges";
+import { useCollege, useCollegeBySlug } from "@/features/colleges";
 import { LeadForm } from "@/features/leads";
 import { Card, CardContent, Badge, Button, LoadingPage, Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -26,7 +26,11 @@ export default function CollegeDetailPage() {
   const router = useRouter();
   const collegeId = params.id as string;
 
-  const { data, isLoading, isError } = useCollege(collegeId);
+  const isObjectId = /^[a-f\d]{24}$/i.test(collegeId);
+  const byId = useCollege(isObjectId ? collegeId : "");
+  const bySlug = useCollegeBySlug(!isObjectId ? collegeId : "");
+
+  const { data, isLoading, isError } = isObjectId ? byId : bySlug;
   const college = data?.data;
 
   if (isLoading) {

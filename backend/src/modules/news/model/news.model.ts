@@ -1,0 +1,61 @@
+import mongoose, { Document, Schema } from "mongoose";
+
+export interface INews extends Document {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image?: string;
+  category: string;
+  author: string;
+  authorAvatar?: string;
+  tags: string[];
+  readTime: string;
+  featured: boolean;
+  isActive: boolean;
+  publishedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const newsSchema = new Schema<INews>(
+  {
+    title: { type: String, required: true, trim: true, maxlength: 500 },
+    slug: { type: String, unique: true, lowercase: true },
+    excerpt: { type: String, required: true, maxlength: 500 },
+    content: { type: String, required: true, maxlength: 50000 },
+    image: String,
+    category: { type: String, required: true },
+    author: { type: String, required: true },
+    authorAvatar: String,
+    tags: [String],
+    readTime: String,
+    featured: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    publishedAt: Date,
+  },
+  { timestamps: true }
+);
+
+newsSchema.pre("save", function (next) {
+  if (this.isModified("title")) {
+    this.slug = this.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+  if (!this.readTime) {
+    const words = this.content.split(/\s+/).length;
+    this.readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
+  }
+  if (!this.publishedAt) {
+    this.publishedAt = new Date();
+  }
+  next();
+});
+
+newsSchema.index({ slug: 1 });
+newsSchema.index({ category: 1, isActive: 1 });
+newsSchema.index({ featured: 1 });
+newsSchema.index({ publishedAt: -1 });
+newsSchema.index({ title: "text", excerpt: "text", content: "text" });
+
+const News = mongoose.model<INews>("News", newsSchema);
+export default News;

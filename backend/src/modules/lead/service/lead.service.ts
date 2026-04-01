@@ -1,5 +1,7 @@
 import Lead, { ILead } from "../model/lead.model";
+import College from "../../college/model/college.model";
 import AppError from "../../../utils/appError";
+import smsService from "../../../services/sms/sms.service";
 
 interface GetLeadsQuery {
   page?: string;
@@ -73,7 +75,14 @@ class LeadService {
 
   async createLead(data: Partial<ILead>, userId?: string): Promise<ILead> {
     const lead = await Lead.create({ ...data, createdBy: userId });
-    return lead.populate("college", "name slug logo");
+    const populated = await lead.populate("college", "name slug logo");
+
+    // Fire-and-forget SMS — never block lead creation on SMS failure
+    this.sendLeadConfirmationSms(populated).catch((err) =>
+      console.error("[LeadService] SMS error:", err.message)
+    );
+
+    return populated;
   }
 
   async updateLead(id: string, data: Partial<ILead>): Promise<ILead> {
@@ -85,6 +94,14 @@ class LeadService {
       .populate("assignedTo", "name email");
 
     if (!lead) throw new AppError("Lead not found", 404);
+
+    // Send status update SMS if status changed
+    if (data.status) {
+      this.sendStatusUpdateSms(lead).catch((err) =>
+        console.error("[LeadService] SMS error:", err.message)
+      );
+    }
+
     return lead;
   }
 
@@ -103,6 +120,36 @@ class LeadService {
     ]);
 
     return { total, new: newLeads, contacted, interested, admitted };
+  }
+
+  // ── SMS helpers ──────────────────────────────────────────────
+
+  private getCollegeName(lead: ILead): string {
+    if (lead.college && typeof lead.college === "object" && "name" in lead.college) {
+      return String(lead.college.name);
+    }
+    return "your selected college";
+  }
+
+  private async sendLeadConfirmationSms(lead: ILead): Promise<void> {
+    const collegeName = this.getCollegeName(lead);
+
+    await smsService.send({
+      to: lead.phone,
+      template: "lead_confirmation",
+      data: { name: lead.name, college: collegeName },
+    });
+  }
+
+  private async sendStatusUpdateSms(lead: ILead): Promise<void> {
+    const collegeName = this.getCollegeName(lead);
+    const statusLabel = lead.status.replace("_", " ");
+
+    await smsService.send({
+      to: lead.phone,
+      template: "lead_status_update",
+      data: { name: lead.name, college: collegeName, status: statusLabel },
+    });
   }
 }
 

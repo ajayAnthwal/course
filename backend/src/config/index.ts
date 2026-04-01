@@ -13,6 +13,21 @@ const config = {
   },
   nodeEnv: process.env.NODE_ENV || "development",
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
+  razorpay: {
+    keyId: process.env.RAZORPAY_KEY_ID || "",
+    keySecret: process.env.RAZORPAY_KEY_SECRET || "",
+    webhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || "",
+  },
+  sms: {
+    provider: process.env.SMS_PROVIDER || "",
+    fast2smsApiKey: process.env.FAST2SMS_API_KEY || "",
+    twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || "",
+    twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || "",
+    twilioFromNumber: process.env.TWILIO_FROM_NUMBER || "",
+    msg91ApiKey: process.env.MSG91_API_KEY || "",
+    msg91SenderId: process.env.MSG91_SENDER_ID || "",
+    msg91TemplateId: process.env.MSG91_TEMPLATE_ID || "",
+  },
 } as const;
 
 export default config;
