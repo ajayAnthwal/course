@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { leadService } from "../services/lead.service";
+import type { Lead } from "@/types";
 
 interface GetLeadsQuery {
   page?: number;

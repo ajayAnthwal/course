@@ -1,19 +1,43 @@
 "use client";
 
+import Link from "next/link";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
 import { useCollegeStats } from "@/features/colleges";
+import { useLeadStats, useLeads } from "@/features/leads";
+import { formatDate } from "@/lib/utils";
+import type { LeadStatus } from "@/types";
+
+const statusBadge: Record<LeadStatus, { label: string; variant: "primary" | "secondary" | "success" | "warning" | "danger" | "default" }> = {
+  new: { label: "New", variant: "primary" },
+  contacted: { label: "Contacted", variant: "warning" },
+  interested: { label: "Interested", variant: "secondary" },
+  admitted: { label: "Admitted", variant: "success" },
+  not_interested: { label: "Not Interested", variant: "danger" },
+};
 
 function AdminDashboardContent() {
   const { user } = useAuth();
   const { data: collegeStats } = useCollegeStats();
+  const { data: leadStats } = useLeadStats();
+  const { data: recentLeadsData } = useLeads({ limit: 5, sortBy: "createdAt", sortOrder: "desc" });
+
+  const leadData = leadStats?.data;
+  const recentLeads = recentLeadsData?.data || [];
 
   const stats = [
     { label: "Total Users", value: "1,234", change: "+12%", icon: "👥" },
     { label: "Total Colleges", value: collegeStats?.data?.total || "0", change: "+5%", icon: "🏛️" },
-    { label: "Total Leads", value: "4,567", change: "+23%", icon: "📋" },
-    { label: "Revenue", value: "₹12.5L", change: "+18%", icon: "💰" },
+    { label: "Total Leads", value: leadData?.total ?? "0", change: "+23%", icon: "📋" },
+    { label: "New Leads", value: leadData?.new ?? "0", change: "uncontacted", icon: "🆕" },
+  ];
+
+  const quickActions = [
+    { label: "Add College", href: "#", icon: "➕" },
+    { label: "View Leads", href: "/dashboard/admin/leads", icon: "📋" },
+    { label: "Manage Users", href: "#", icon: "👥" },
+    { label: "Reports", href: "#", icon: "📊" },
   ];
 
   return (
@@ -56,13 +80,8 @@ function AdminDashboardContent() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: "Add College", href: "#", icon: "➕" },
-                { label: "View Leads", href: "#", icon: "📋" },
-                { label: "Manage Users", href: "#", icon: "👥" },
-                { label: "Reports", href: "#", icon: "📊" },
-              ].map((action) => (
-                <a
+              {quickActions.map((action) => (
+                <Link
                   key={action.label}
                   href={action.href}
                   className="flex flex-col items-center gap-2 p-4 rounded-lg border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 transition-all duration-200"
@@ -71,57 +90,57 @@ function AdminDashboardContent() {
                   <span className="text-sm font-medium text-neutral-700">
                     {action.label}
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
+        {/* Recent Leads */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Recent Leads</CardTitle>
+              <Link
+                href="/dashboard/admin/leads"
+                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+              >
+                View all
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  action: "New lead from Mumbai",
-                  time: "2 minutes ago",
-                  type: "lead",
-                },
-                {
-                  action: "College profile updated",
-                  time: "1 hour ago",
-                  type: "college",
-                },
-                {
-                  action: "New user registered",
-                  time: "3 hours ago",
-                  type: "user",
-                },
-                {
-                  action: "Payment received",
-                  time: "5 hours ago",
-                  type: "payment",
-                },
-              ].map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-3 border-b border-neutral-100 last:border-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary-500" />
-                    <span className="text-sm text-neutral-700">
-                      {activity.action}
-                    </span>
-                  </div>
-                  <span className="text-xs text-neutral-400">
-                    {activity.time}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {recentLeads.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-3xl mb-2">📋</div>
+                <p className="text-sm text-neutral-500">No leads yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentLeads.map((lead) => {
+                  const badge = statusBadge[lead.status] || statusBadge.new;
+                  return (
+                    <div
+                      key={lead._id}
+                      className="flex items-center justify-between p-3 rounded-lg border border-neutral-100 hover:border-neutral-200 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-primary-500" />
+                        <div>
+                          <p className="text-sm font-medium text-neutral-900">{lead.name}</p>
+                          <p className="text-xs text-neutral-500">
+                            {lead.course || "General enquiry"} · {formatDate(lead.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant={badge.variant} size="sm">
+                        {badge.label}
+                      </Badge>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

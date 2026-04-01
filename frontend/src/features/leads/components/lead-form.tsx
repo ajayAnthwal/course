@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Textarea } from "@/components/ui";
 import { useCreateLead } from "../hooks/useLeads";
 import { createLeadSchema, type CreateLeadInput } from "../schemas/lead.schema";
 
@@ -91,16 +91,12 @@ export function LeadForm({ collegeId, collegeName, onSuccess }: LeadFormProps) {
         {...register("course")}
       />
 
-      <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-          Message (Optional)
-        </label>
-        <textarea
-          className="flex w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[100px]"
-          placeholder="Any specific questions or requirements..."
-          {...register("message")}
-        />
-      </div>
+      <Textarea
+        label="Message (Optional)"
+        placeholder="Any specific questions or requirements..."
+        error={errors.message?.message}
+        {...register("message")}
+      />
 
       <Button
         type="submit"
