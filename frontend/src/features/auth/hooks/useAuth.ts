@@ -11,6 +11,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Check stored auth on mount
   useEffect(() => {
@@ -20,9 +21,10 @@ export function useAuth() {
       setUser(storedUser);
       setIsAuthenticated(true);
     }
+    setIsInitialized(true);
   }, []);
 
-  // Get current user query
+  // Get current user query (validates token with backend)
   const { isLoading: isUserLoading } = useQuery({
     queryKey: ["auth", "me"],
     queryFn: async () => {
@@ -34,19 +36,20 @@ export function useAuth() {
       }
       throw new Error("Failed to get user");
     },
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && isInitialized,
     retry: false,
   });
 
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        authService.setAuthData(response.data.token, response.data.user);
-        setUser(response.data.user);
+      const authData = response.data;
+      if (response.success && authData?.user && authData?.token) {
+        authService.setAuthData(authData.token, authData.user);
+        setUser(authData.user);
         setIsAuthenticated(true);
         queryClient.invalidateQueries({ queryKey: ["auth"] });
-        router.push(`/dashboard/${response.data.user.role}`);
+        router.push(`/dashboard/${authData.user.role}`);
       }
     },
   });
@@ -54,12 +57,13 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: authService.register,
     onSuccess: (response) => {
-      if (response.success && response.data) {
-        authService.setAuthData(response.data.token, response.data.user);
-        setUser(response.data.user);
+      const authData = response.data;
+      if (response.success && authData?.user && authData?.token) {
+        authService.setAuthData(authData.token, authData.user);
+        setUser(authData.user);
         setIsAuthenticated(true);
         queryClient.invalidateQueries({ queryKey: ["auth"] });
-        router.push(`/dashboard/${response.data.user.role}`);
+        router.push(`/dashboard/${authData.user.role}`);
       }
     },
   });
@@ -88,7 +92,7 @@ export function useAuth() {
       email: string;
       password: string;
       confirmPassword: string;
-      role: "student" | "college" | "teacher";
+      role: "student" | "college";
       phone?: string;
     }) => {
       registerMutation.mutate(data);
@@ -103,7 +107,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
-    isLoading: isUserLoading,
+    isLoading: !isInitialized || isUserLoading,
     login,
     register,
     logout,

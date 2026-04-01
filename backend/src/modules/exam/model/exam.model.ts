@@ -64,7 +64,6 @@ examSchema.pre("save", function (next) {
   next();
 });
 
-examSchema.index({ slug: 1 });
 examSchema.index({ category: 1, isActive: 1 });
 examSchema.index({ featured: 1 });
 examSchema.index({ name: "text", description: "text" });

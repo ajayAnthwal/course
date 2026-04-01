@@ -51,7 +51,6 @@ newsSchema.pre("save", function (next) {
   next();
 });
 
-newsSchema.index({ slug: 1 });
 newsSchema.index({ category: 1, isActive: 1 });
 newsSchema.index({ featured: 1 });
 newsSchema.index({ publishedAt: -1 });

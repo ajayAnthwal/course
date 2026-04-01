@@ -7,3 +7,9 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";
 export { Spinner, LoadingPage, LoadingSkeleton, LoadingCard } from "./loading";
 export { Modal } from "./modal";
+export { DataTable } from "./data-table";
+export { AreaChart } from "./area-chart";
+export { BarChart } from "./bar-chart";
+export { PieChart } from "./pie-chart";
+export { StatCard } from "./stat-card";
+export { Skeleton, TableSkeleton, CardSkeleton, ChartSkeleton } from "./skeleton";

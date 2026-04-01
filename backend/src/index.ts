@@ -16,20 +16,32 @@ import AppError from "./utils/appError";
 
 const app = express();
 
-// Global middleware
+// CORS
 app.use(
   cors({
-    origin: config.frontendUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, same-origin)
+      if (!origin) return callback(null, true);
+      const allowed = [config.frontendUrl, "http://localhost:3000", "http://localhost:3001"];
+      if (allowed.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Root route
+app.get("/", (_req, res) => {
+  res.status(200).json({ success: true, message: "EduPortal API is running", version: "1.0.0" });
+});
+
 // Health check
 app.get("/api/health", (_req, res) => {
-  res.status(200).json({ success: true, message: "Server is running" });
+  res.status(200).json({ success: true, message: "Server is healthy", timestamp: new Date().toISOString() });
 });
 
 // API routes
@@ -52,14 +64,36 @@ app.use(errorHandler);
 
 // Start server
 const startServer = async (): Promise<void> => {
-  await connectDB();
+  try {
+    await connectDB();
 
-  app.listen(config.port, () => {
-    console.log(
-      `Server running in ${config.nodeEnv} mode on port ${config.port}`
-    );
-  });
+    app.listen(config.port, "0.0.0.0", () => {
+      console.log("");
+      console.log("==========================================");
+      console.log(`  Server running in ${config.nodeEnv} mode`);
+      console.log(`  Local:   http://localhost:${config.port}`);
+      console.log(`  API:     http://localhost:${config.port}/api`);
+      console.log(`  Health:  http://localhost:${config.port}/api/health`);
+      console.log(`  MongoDB: ${config.mongodbUri}`);
+      console.log("==========================================");
+      console.log("");
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
 };
+
+// Handle uncaught errors
+process.on("unhandledRejection", (err: Error) => {
+  console.error("UNHANDLED REJECTION:", err.message);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (err: Error) => {
+  console.error("UNCAUGHT EXCEPTION:", err.message);
+  process.exit(1);
+});
 
 startServer();
 

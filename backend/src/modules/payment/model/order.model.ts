@@ -65,7 +65,6 @@ const orderSchema = new Schema<IOrder>(
 );
 
 orderSchema.index({ user: 1, status: 1 });
-orderSchema.index({ razorpayOrderId: 1 });
 
 const Order = mongoose.model<IOrder>("Order", orderSchema);
 
