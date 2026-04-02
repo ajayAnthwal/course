@@ -23,7 +23,12 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (mobile apps, curl, same-origin)
       if (!origin) return callback(null, true);
-      const allowed = [config.frontendUrl, "http://localhost:3000", "http://localhost:3001"];
+      const allowed = [
+        config.frontendUrl,
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://course-frontend-ruddy.vercel.app",
+      ];
       if (allowed.includes(origin)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
