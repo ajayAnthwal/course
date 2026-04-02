@@ -1,18 +1,20 @@
 "use client";
 
 import { Suspense, lazy } from "react";
-import HeroSection from "@/components/screens/home/hero-section";
-import StatsSection from "@/components/screens/home/stats-section";
-import CategoriesSection from "@/components/screens/home/categories-section";
-import WhyChooseUs from "@/components/screens/home/why-choose-us";
-import TestimonialsSection from "@/components/screens/home/testimonials-section";
-import NewsSection from "@/components/screens/home/news-section";
-import CTASection from "@/components/screens/home/cta-section";
+import Link from "next/link";
+import { Button, Badge, Card, CardContent, Skeleton } from "@/components/ui";
+import { useCollegeStats } from "@/features/colleges";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useSiteStats } from "@/features/stats/hooks/useStats";
 import { useTestimonials } from "@/features/testimonials/hooks/useTestimonials";
 import { useLatestNews } from "@/features/news/hooks/useNews";
-import { Skeleton } from "@/components/ui";
+import HeroSection from "./hero-section";
+import StatsSection from "./stats-section";
+import CategoriesSection from "./categories-section";
+import WhyChooseUs from "./why-choose-us";
+import TestimonialsSection from "./testimonials-section";
+import NewsSection from "./news-section";
+import CTASection from "./cta-section";
 
 const FeaturedColleges = lazy(() => import("@/features/colleges/components/featured-colleges").then(mod => ({ default: mod.FeaturedColleges })));
 
