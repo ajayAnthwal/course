@@ -8,12 +8,12 @@ export const getAllCourses = catchAsync(async (req: Request, res: Response, _nex
 });
 
 export const getCourseById = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const course = await courseService.getCourseById(req.params.id);
+  const course = await courseService.getCourseById(req.params.id as string);
   res.status(200).json({ success: true, message: "Course retrieved", data: course });
 });
 
 export const getCourseBySlug = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const course = await courseService.getCourseBySlug(req.params.slug);
+  const course = await courseService.getCourseBySlug(req.params.slug as string);
   res.status(200).json({ success: true, message: "Course retrieved", data: course });
 });
 
@@ -33,11 +33,11 @@ export const createCourse = catchAsync(async (req: Request, res: Response, _next
 });
 
 export const updateCourse = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const course = await courseService.updateCourse(req.params.id, req.body);
+  const course = await courseService.updateCourse(req.params.id as string, req.body);
   res.status(200).json({ success: true, message: "Course updated", data: course });
 });
 
 export const deleteCourse = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  await courseService.deleteCourse(req.params.id);
+  await courseService.deleteCourse(req.params.id as string);
   res.status(200).json({ success: true, message: "Course deleted" });
 });

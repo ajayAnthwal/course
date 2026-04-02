@@ -14,7 +14,7 @@ export const getAllLeads = catchAsync(async (req: any, res: Response, _next: Nex
 });
 
 export const getLeadById = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const lead = await leadService.getLeadById(req.params.id);
+  const lead = await leadService.getLeadById(req.params.id as string);
 
   res.status(200).json({
     success: true,
@@ -34,7 +34,7 @@ export const createLead = catchAsync(async (req: any, res: Response, _next: Next
 });
 
 export const updateLead = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const lead = await leadService.updateLead(req.params.id, req.body);
+  const lead = await leadService.updateLead(req.params.id as string, req.body);
 
   res.status(200).json({
     success: true,
@@ -44,7 +44,7 @@ export const updateLead = catchAsync(async (req: Request, res: Response, _next: 
 });
 
 export const deleteLead = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  await leadService.deleteLead(req.params.id);
+  await leadService.deleteLead(req.params.id as string);
 
   res.status(200).json({
     success: true,

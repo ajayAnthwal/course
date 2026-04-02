@@ -14,7 +14,7 @@ export const getAllColleges = catchAsync(async (req: Request, res: Response, _ne
 });
 
 export const getCollegeById = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const college = await collegeService.getCollegeById(req.params.id);
+  const college = await collegeService.getCollegeById(req.params.id as string);
 
   res.status(200).json({
     success: true,
@@ -24,7 +24,7 @@ export const getCollegeById = catchAsync(async (req: Request, res: Response, _ne
 });
 
 export const getCollegeBySlug = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const college = await collegeService.getCollegeBySlug(req.params.slug);
+  const college = await collegeService.getCollegeBySlug(req.params.slug as string);
 
   res.status(200).json({
     success: true,
@@ -44,7 +44,7 @@ export const createCollege = catchAsync(async (req: Request, res: Response, _nex
 });
 
 export const updateCollege = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const college = await collegeService.updateCollege(req.params.id, req.body);
+  const college = await collegeService.updateCollege(req.params.id as string, req.body);
 
   res.status(200).json({
     success: true,
@@ -54,7 +54,7 @@ export const updateCollege = catchAsync(async (req: Request, res: Response, _nex
 });
 
 export const deleteCollege = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  await collegeService.deleteCollege(req.params.id);
+  await collegeService.deleteCollege(req.params.id as string);
 
   res.status(200).json({
     success: true,

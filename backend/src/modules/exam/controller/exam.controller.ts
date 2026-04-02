@@ -8,12 +8,12 @@ export const getAllExams = catchAsync(async (req: Request, res: Response, _next:
 });
 
 export const getExamById = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const exam = await examService.getExamById(req.params.id);
+  const exam = await examService.getExamById(req.params.id as string);
   res.status(200).json({ success: true, message: "Exam retrieved", data: exam });
 });
 
 export const getExamBySlug = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const exam = await examService.getExamBySlug(req.params.slug);
+  const exam = await examService.getExamBySlug(req.params.slug as string);
   res.status(200).json({ success: true, message: "Exam retrieved", data: exam });
 });
 
@@ -28,11 +28,11 @@ export const createExam = catchAsync(async (req: Request, res: Response, _next: 
 });
 
 export const updateExam = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const exam = await examService.updateExam(req.params.id, req.body);
+  const exam = await examService.updateExam(req.params.id as string, req.body);
   res.status(200).json({ success: true, message: "Exam updated", data: exam });
 });
 
 export const deleteExam = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  await examService.deleteExam(req.params.id);
+  await examService.deleteExam(req.params.id as string);
   res.status(200).json({ success: true, message: "Exam deleted" });
 });

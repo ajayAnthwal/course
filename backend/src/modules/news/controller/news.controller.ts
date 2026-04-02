@@ -8,12 +8,12 @@ export const getAllNews = catchAsync(async (req: Request, res: Response, _next: 
 });
 
 export const getNewsById = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const article = await newsService.getNewsById(req.params.id);
+  const article = await newsService.getNewsById(req.params.id as string);
   res.status(200).json({ success: true, message: "Article retrieved", data: article });
 });
 
 export const getNewsBySlug = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const article = await newsService.getNewsBySlug(req.params.slug);
+  const article = await newsService.getNewsBySlug(req.params.slug as string);
   res.status(200).json({ success: true, message: "Article retrieved", data: article });
 });
 
@@ -33,11 +33,11 @@ export const createNews = catchAsync(async (req: Request, res: Response, _next: 
 });
 
 export const updateNews = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const article = await newsService.updateNews(req.params.id, req.body);
+  const article = await newsService.updateNews(req.params.id as string, req.body);
   res.status(200).json({ success: true, message: "Article updated", data: article });
 });
 
 export const deleteNews = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  await newsService.deleteNews(req.params.id);
+  await newsService.deleteNews(req.params.id as string);
   res.status(200).json({ success: true, message: "Article deleted" });
 });
