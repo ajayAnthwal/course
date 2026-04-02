@@ -17,6 +17,6 @@ export interface RegisterCredentials {
   email: string;
   password: string;
   confirmPassword: string;
-  role: "student" | "college";
+  role: "student" | "teacher";
   phone?: string;
 }

@@ -92,7 +92,7 @@ export function useAuth() {
       email: string;
       password: string;
       confirmPassword: string;
-      role: "student" | "college";
+      role: "student" | "teacher";
       phone?: string;
     }) => {
       registerMutation.mutate(data);

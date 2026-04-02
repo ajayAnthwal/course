@@ -412,7 +412,7 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href="/colleges">
-              <Button size="xl" variant="outline" className="border-white/20 text-white hover:bg-white/10 w-full sm:w-auto">
+              <Button size="xl" variant="outline" className="border-white/20 bg-transparent text-white hover:bg-white/10 w-full sm:w-auto">
                 Browse Colleges
               </Button>
             </Link>

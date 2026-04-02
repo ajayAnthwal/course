@@ -16,10 +16,10 @@ const roleOptions = [
     icon: "🎓",
   },
   {
-    label: "College Admin",
-    value: "college" as const,
-    description: "Manage your college listing and view enquiries",
-    icon: "🏛️",
+    label: "Teacher",
+    value: "teacher" as const,
+    description: "Guide students, share expertise, manage courses",
+    icon: "👨‍🏫",
   },
 ];
 
@@ -84,7 +84,7 @@ export function RegisterForm() {
 
       {/* Role Selection - Radio Cards */}
       <div>
-        <label className="block text-sm font-medium text-neutral-700 mb-3">
+        <label className="block text-sm font-medium text-text-secondary mb-3">
           I am a
         </label>
         <div className="grid grid-cols-2 gap-3">
@@ -95,7 +95,7 @@ export function RegisterForm() {
                 "relative flex flex-col items-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200",
                 selectedRole === option.value
                   ? "border-primary-500 bg-primary-50 shadow-sm"
-                  : "border-neutral-200 bg-white hover:border-neutral-300"
+                  : "border-border bg-bg-elevated hover:border-border-strong"
               )}
             >
               <input
@@ -105,10 +105,10 @@ export function RegisterForm() {
                 {...register("role")}
               />
               <span className="text-2xl mb-2">{option.icon}</span>
-              <span className="text-sm font-semibold text-neutral-900">
+              <span className="text-sm font-semibold text-text">
                 {option.label}
               </span>
-              <span className="text-xs text-neutral-500 text-center mt-1 leading-tight">
+              <span className="text-xs text-text-muted text-center mt-1 leading-tight">
                 {option.description}
               </span>
               {selectedRole === option.value && (
@@ -146,7 +146,7 @@ export function RegisterForm() {
         Create Account
       </Button>
 
-      <p className="text-center text-sm text-neutral-600">
+      <p className="text-center text-sm text-text-secondary">
         Already have an account?{" "}
         <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
           Sign In

@@ -20,7 +20,7 @@ export const registerSchema = z
         "Password must contain uppercase, lowercase, and number"
       ),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    role: z.enum(["student", "college"]).default("student"),
+    role: z.enum(["student", "teacher"]).default("student"),
     phone: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {

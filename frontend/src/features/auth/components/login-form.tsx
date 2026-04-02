@@ -51,7 +51,7 @@ export function LoginForm() {
       />
 
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm text-neutral-600">
+        <label className="flex items-center gap-2 text-sm text-text-secondary">
           <input
             type="checkbox"
             className="rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
@@ -67,7 +67,7 @@ export function LoginForm() {
         Sign In
       </Button>
 
-      <p className="text-center text-sm text-neutral-600">
+      <p className="text-center text-sm text-text-secondary">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="text-primary-600 hover:text-primary-700 font-medium">
           Sign Up
