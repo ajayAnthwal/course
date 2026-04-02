@@ -28,12 +28,34 @@ export const getCourseStats = catchAsync(async (_req: Request, res: Response, _n
 });
 
 export const createCourse = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const course = await courseService.createCourse(req.body);
+  const data: any = { ...req.body };
+  if (req.file) data.image = `/uploads/${req.file.filename}`;
+  if (typeof data.fees === "string") try { data.fees = JSON.parse(data.fees); } catch {}
+  if (typeof data.averageSalary === "string") try { data.averageSalary = JSON.parse(data.averageSalary); } catch {}
+  if (typeof data.careerOpportunities === "string") try { data.careerOpportunities = JSON.parse(data.careerOpportunities); } catch {}
+  if (typeof data.topRecruiters === "string") try { data.topRecruiters = JSON.parse(data.topRecruiters); } catch {}
+  if (typeof data.entranceExams === "string") try { data.entranceExams = JSON.parse(data.entranceExams); } catch {}
+  if (typeof data.specializations === "string") try { data.specializations = JSON.parse(data.specializations); } catch {}
+  if (data.durationYears) data.durationYears = Number(data.durationYears);
+  if (data.collegeCount) data.collegeCount = Number(data.collegeCount);
+  if (data.rating) data.rating = Number(data.rating);
+  const course = await courseService.createCourse(data);
   res.status(201).json({ success: true, message: "Course created", data: course });
 });
 
 export const updateCourse = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-  const course = await courseService.updateCourse(req.params.id as string, req.body);
+  const data: any = { ...req.body };
+  if (req.file) data.image = `/uploads/${req.file.filename}`;
+  if (typeof data.fees === "string") try { data.fees = JSON.parse(data.fees); } catch {}
+  if (typeof data.averageSalary === "string") try { data.averageSalary = JSON.parse(data.averageSalary); } catch {}
+  if (typeof data.careerOpportunities === "string") try { data.careerOpportunities = JSON.parse(data.careerOpportunities); } catch {}
+  if (typeof data.topRecruiters === "string") try { data.topRecruiters = JSON.parse(data.topRecruiters); } catch {}
+  if (typeof data.entranceExams === "string") try { data.entranceExams = JSON.parse(data.entranceExams); } catch {}
+  if (typeof data.specializations === "string") try { data.specializations = JSON.parse(data.specializations); } catch {}
+  if (data.durationYears) data.durationYears = Number(data.durationYears);
+  if (data.collegeCount) data.collegeCount = Number(data.collegeCount);
+  if (data.rating) data.rating = Number(data.rating);
+  const course = await courseService.updateCourse(req.params.id as string, data);
   res.status(200).json({ success: true, message: "Course updated", data: course });
 });
 

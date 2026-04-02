@@ -25,4 +25,23 @@ export const courseService = {
     const response = await apiClient.get("/courses/featured");
     return response.data;
   },
+
+  async create(data: FormData): Promise<ApiResponse<Course>> {
+    const response = await apiClient.post("/courses", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
+  async update(id: string, data: FormData): Promise<ApiResponse<Course>> {
+    const response = await apiClient.patch(`/courses/${id}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  },
+
+  async delete(id: string): Promise<ApiResponse<void>> {
+    const response = await apiClient.delete(`/courses/${id}`);
+    return response.data;
+  },
 };

@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const courseSchema = new mongoose_1.Schema({
     name: { type: String, required: true, trim: true, maxlength: 300 },
-    slug: { type: String, unique: true, lowercase: true },
+    slug: { type: String, lowercase: true },
     shortName: { type: String, trim: true },
     description: { type: String, required: true, maxlength: 10000 },
     image: String,
@@ -70,6 +70,7 @@ courseSchema.pre("save", function (next) {
 });
 courseSchema.index({ category: 1, isActive: 1 });
 courseSchema.index({ featured: 1 });
+courseSchema.index({ slug: 1 }, { unique: true });
 courseSchema.index({ name: "text", description: "text" });
 const Course = mongoose_1.default.model("Course", courseSchema);
 exports.default = Course;

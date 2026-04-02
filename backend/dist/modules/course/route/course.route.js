@@ -32,11 +32,15 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const courseController = __importStar(require("../controller/course.controller"));
 const auth_1 = require("../../../middlewares/auth");
 const validate_1 = require("../../../middlewares/validate");
+const upload_1 = __importDefault(require("../../../middlewares/upload"));
 const course_validation_1 = require("../validation/course.validation");
 const router = (0, express_1.Router)();
 router.get("/featured", courseController.getFeaturedCourses);
@@ -45,8 +49,8 @@ router.get("/slug/:slug", courseController.getCourseBySlug);
 router.get("/", (0, validate_1.validate)(course_validation_1.getCoursesQuerySchema), courseController.getAllCourses);
 router.get("/:id", courseController.getCourseById);
 router.use(auth_1.protect);
-router.post("/", (0, auth_1.restrictTo)("admin"), (0, validate_1.validate)(course_validation_1.createCourseSchema), courseController.createCourse);
-router.patch("/:id", (0, auth_1.restrictTo)("admin"), (0, validate_1.validate)(course_validation_1.updateCourseSchema), courseController.updateCourse);
+router.post("/", (0, auth_1.restrictTo)("admin"), upload_1.default.single("image"), (0, validate_1.validate)(course_validation_1.createCourseSchema), courseController.createCourse);
+router.patch("/:id", (0, auth_1.restrictTo)("admin"), upload_1.default.single("image"), (0, validate_1.validate)(course_validation_1.updateCourseSchema), courseController.updateCourse);
 router.delete("/:id", (0, auth_1.restrictTo)("admin"), courseController.deleteCourse);
 exports.default = router;
 //# sourceMappingURL=course.route.js.map

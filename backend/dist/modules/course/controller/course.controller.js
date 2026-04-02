@@ -27,11 +27,89 @@ exports.getCourseStats = (0, catchAsync_1.default)(async (_req, res, _next) => {
     res.status(200).json({ success: true, message: "Course stats retrieved", data: stats });
 });
 exports.createCourse = (0, catchAsync_1.default)(async (req, res, _next) => {
-    const course = await course_service_1.default.createCourse(req.body);
+    const data = { ...req.body };
+    if (req.file)
+        data.image = `/uploads/${req.file.filename}`;
+    if (typeof data.fees === "string")
+        try {
+            data.fees = JSON.parse(data.fees);
+        }
+        catch { }
+    if (typeof data.averageSalary === "string")
+        try {
+            data.averageSalary = JSON.parse(data.averageSalary);
+        }
+        catch { }
+    if (typeof data.careerOpportunities === "string")
+        try {
+            data.careerOpportunities = JSON.parse(data.careerOpportunities);
+        }
+        catch { }
+    if (typeof data.topRecruiters === "string")
+        try {
+            data.topRecruiters = JSON.parse(data.topRecruiters);
+        }
+        catch { }
+    if (typeof data.entranceExams === "string")
+        try {
+            data.entranceExams = JSON.parse(data.entranceExams);
+        }
+        catch { }
+    if (typeof data.specializations === "string")
+        try {
+            data.specializations = JSON.parse(data.specializations);
+        }
+        catch { }
+    if (data.durationYears)
+        data.durationYears = Number(data.durationYears);
+    if (data.collegeCount)
+        data.collegeCount = Number(data.collegeCount);
+    if (data.rating)
+        data.rating = Number(data.rating);
+    const course = await course_service_1.default.createCourse(data);
     res.status(201).json({ success: true, message: "Course created", data: course });
 });
 exports.updateCourse = (0, catchAsync_1.default)(async (req, res, _next) => {
-    const course = await course_service_1.default.updateCourse(req.params.id, req.body);
+    const data = { ...req.body };
+    if (req.file)
+        data.image = `/uploads/${req.file.filename}`;
+    if (typeof data.fees === "string")
+        try {
+            data.fees = JSON.parse(data.fees);
+        }
+        catch { }
+    if (typeof data.averageSalary === "string")
+        try {
+            data.averageSalary = JSON.parse(data.averageSalary);
+        }
+        catch { }
+    if (typeof data.careerOpportunities === "string")
+        try {
+            data.careerOpportunities = JSON.parse(data.careerOpportunities);
+        }
+        catch { }
+    if (typeof data.topRecruiters === "string")
+        try {
+            data.topRecruiters = JSON.parse(data.topRecruiters);
+        }
+        catch { }
+    if (typeof data.entranceExams === "string")
+        try {
+            data.entranceExams = JSON.parse(data.entranceExams);
+        }
+        catch { }
+    if (typeof data.specializations === "string")
+        try {
+            data.specializations = JSON.parse(data.specializations);
+        }
+        catch { }
+    if (data.durationYears)
+        data.durationYears = Number(data.durationYears);
+    if (data.collegeCount)
+        data.collegeCount = Number(data.collegeCount);
+    if (data.rating)
+        data.rating = Number(data.rating);
+    const course = await course_service_1.default.updateCourse(req.params.id, data);
     res.status(200).json({ success: true, message: "Course updated", data: course });
 });
 exports.deleteCourse = (0, catchAsync_1.default)(async (req, res, _next) => {
