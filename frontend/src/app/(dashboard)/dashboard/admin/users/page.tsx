@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Select, Modal, DataTable, Button } from "@/components/ui";
+import { Badge, Select, Modal, DataTable, Button, useToast } from "@/components/ui";
 import { useUsers, useUpdateUser, useDeleteUser } from "@/features/users";
 import { formatDate } from "@/lib/utils";
 import type { User, UserRole } from "@/types";
@@ -29,12 +29,14 @@ const roleIcon: Record<UserRole, string> = {
 
 function AdminUsersContent() {
   const { user: currentUser } = useAuth();
+  const { showToast } = useToast();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [newRole, setNewRole] = useState("");
 
   const { data: usersData, isLoading, isFetching } = useUsers({
     page, limit: 10, search: search || undefined, role: roleFilter || undefined, sortBy: "createdAt", sortOrder: "desc",
@@ -142,8 +144,21 @@ function AdminUsersContent() {
             </div>
             {selectedUser._id !== currentUser?._id && (
               <div className="flex justify-end gap-3 pt-2 border-t border-neutral-100">
-                <Button variant={selectedUser.isActive ? "outline" : "primary"} onClick={() => updateUser.mutate({ id: selectedUser._id, data: { isActive: !selectedUser.isActive } }, { onSuccess: () => setSelectedUser((prev) => prev ? { ...prev, isActive: !prev.isActive } : null) })} isLoading={updateUser.isPending}>
-                  {selectedUser.isActive ? "Deactivate User" : "Activate User"}
+                <div className="flex-1">
+                  <Select
+                    label="Change Role"
+                    options={[{ label: "Admin", value: "admin" }, { label: "Student", value: "student" }, { label: "College", value: "college" }, { label: "Teacher", value: "teacher" }]}
+                    value={newRole || selectedUser.role}
+                    onChange={(e) => setNewRole(e.target.value)}
+                  />
+                </div>
+                {newRole && newRole !== selectedUser.role && (
+                  <Button className="self-end" onClick={() => updateUser.mutate({ id: selectedUser._id, data: { role: newRole } }, { onSuccess: () => { showToast("Role updated to " + newRole); setSelectedUser((prev) => prev ? { ...prev, role: newRole as UserRole } : null); setNewRole(""); } })} isLoading={updateUser.isPending}>
+                    Update Role
+                  </Button>
+                )}
+                <Button variant={selectedUser.isActive ? "outline" : "primary"} className="self-end" onClick={() => updateUser.mutate({ id: selectedUser._id, data: { isActive: !selectedUser.isActive } }, { onSuccess: () => { showToast(selectedUser.isActive ? "User deactivated" : "User activated"); setSelectedUser((prev) => prev ? { ...prev, isActive: !prev.isActive } : null); } })} isLoading={updateUser.isPending}>
+                  {selectedUser.isActive ? "Deactivate" : "Activate"}
                 </Button>
               </div>
             )}
@@ -157,7 +172,7 @@ function AdminUsersContent() {
             <p className="text-sm text-neutral-600">Are you sure you want to delete <strong>{selectedUser.name}</strong>? This action cannot be undone.</p>
             <div className="flex justify-end gap-3">
               <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>
-              <Button variant="danger" onClick={() => deleteUser.mutate(selectedUser._id, { onSuccess: () => { setIsDeleteOpen(false); setSelectedUser(null); } })} isLoading={deleteUser.isPending}>Delete</Button>
+              <Button variant="danger" onClick={() => deleteUser.mutate(selectedUser._id, { onSuccess: () => { setIsDeleteOpen(false); setSelectedUser(null); showToast("User deleted"); } })} isLoading={deleteUser.isPending}>Delete</Button>
             </div>
           </div>
         )}

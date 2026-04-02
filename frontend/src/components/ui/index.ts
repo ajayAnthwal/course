@@ -13,3 +13,5 @@ export { BarChart } from "./bar-chart";
 export { PieChart } from "./pie-chart";
 export { StatCard } from "./stat-card";
 export { Skeleton, TableSkeleton, CardSkeleton, ChartSkeleton } from "./skeleton";
+export { ToastProvider, useToast } from "./toast";
+export { FileUpload } from "./file-upload";

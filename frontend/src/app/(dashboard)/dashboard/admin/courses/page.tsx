@@ -7,11 +7,17 @@ import { Badge, Button, Input } from "@/components/ui";
 import { useCourses } from "@/features/courses/hooks/useCourses";
 import { formatDate } from "@/lib/utils";
 
+function formatFees(amount: number) {
+  if (amount >= 10000000) return `₹${(amount / 10000000).toFixed(1)}Cr`;
+  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
+  return `₹${(amount / 1000).toFixed(0)}K`;
+}
+
 export default function AdminCoursesPage() {
   const { user } = useAuth();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const { data, isLoading } = useCourses({ page, limit: 12, search: search || undefined });
+  const { data, isLoading } = useCourses({ page, limit: 15, search: search || undefined });
   const courses = data?.data || [];
   const pagination = data?.pagination;
 
@@ -19,11 +25,9 @@ export default function AdminCoursesPage() {
     <ProtectedRoute allowedRoles={["admin"]}>
       <DashboardLayout role="admin" userName={user?.name}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-neutral-900">Courses</h1>
-              <p className="text-neutral-500 mt-1">View all courses in the database.</p>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold text-neutral-900">Courses</h1>
+            <p className="text-neutral-500 mt-1">View all courses in the database.</p>
           </div>
 
           <div className="bg-white rounded-2xl border border-neutral-200 p-4">
@@ -31,35 +35,51 @@ export default function AdminCoursesPage() {
           </div>
 
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{[1, 2, 3, 4, 5, 6].map((i) => <div key={i} className="bg-white rounded-2xl h-40 animate-pulse" />)}</div>
+            <div className="space-y-3">{[1, 2, 3, 4, 5].map((i) => <div key={i} className="bg-white rounded-xl h-16 animate-pulse border border-neutral-200" />)}</div>
           ) : courses.length === 0 ? (
-            <div className="text-center py-20 text-neutral-400"><p className="text-6xl mb-4">📚</p><p>No courses found.</p></div>
+            <div className="text-center py-20 bg-white rounded-2xl border border-neutral-200">
+              <p className="text-6xl mb-4">📚</p><p className="text-neutral-500">No courses found.</p>
+            </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {courses.map((course) => (
-                <div key={course._id} className="bg-white rounded-2xl border border-neutral-200 p-5 hover:shadow-md transition-shadow">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-semibold text-neutral-900">{course.name}</h3>
-                    {course.featured && <Badge variant="warning" size="sm">Popular</Badge>}
-                  </div>
-                  <p className="text-sm text-neutral-500 capitalize mb-2">{course.level} · {course.duration}</p>
-                  <div className="flex items-center gap-3 text-sm text-neutral-500">
-                    <span>⭐ {course.rating}</span>
-                    <span>🏫 {course.collegeCount}+ colleges</span>
-                  </div>
-                  <div className="mt-3 pt-3 border-t border-neutral-100 flex items-center justify-between">
-                    <span className="text-xs text-neutral-400 capitalize">{course.category}</span>
-                    <span className="text-xs text-neutral-400">{formatDate(course.createdAt)}</span>
-                  </div>
-                </div>
-              ))}
+            <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-neutral-50 border-b border-neutral-200">
+                  <tr>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Course</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Level</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Duration</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Fees</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Colleges</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Rating</th>
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Added</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {courses.map((course) => (
+                    <tr key={course._id} className="hover:bg-neutral-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div>
+                          <p className="font-medium text-neutral-900">{course.name}</p>
+                          <p className="text-xs text-neutral-500">{course.shortName} · {course.category}</p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4"><Badge variant="primary" size="sm" className="capitalize">{course.level}</Badge></td>
+                      <td className="px-6 py-4 text-sm text-neutral-600">{course.duration}</td>
+                      <td className="px-6 py-4 text-sm text-neutral-600">{formatFees(course.fees.min)} - {formatFees(course.fees.max)}</td>
+                      <td className="px-6 py-4 text-sm text-neutral-600">{course.collegeCount}+</td>
+                      <td className="px-6 py-4"><div className="flex items-center gap-1"><span className="text-accent-400 text-sm">⭐</span><span className="text-sm font-medium">{course.rating}</span></div></td>
+                      <td className="px-6 py-4 text-sm text-neutral-500">{formatDate(course.createdAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
 
           {pagination && pagination.totalPages > 1 && (
             <div className="flex justify-center gap-2">
-              {Array.from({ length: pagination.totalPages }, (_, i) => (
-                <button key={i} onClick={() => setPage(i + 1)} className={`w-8 h-8 rounded-lg text-sm font-medium ${page === i + 1 ? "bg-primary-600 text-white" : "bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-50"}`}>{i + 1}</button>
+              {Array.from({ length: Math.min(pagination.totalPages, 10) }, (_, i) => (
+                <button key={i} onClick={() => setPage(i + 1)} className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${page === i + 1 ? "bg-primary-600 text-white" : "bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-50"}`}>{i + 1}</button>
               ))}
             </div>
           )}
