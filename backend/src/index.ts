@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
 import config from "./config";
 import connectDB from "./config/database";
 import errorHandler from "./middlewares/errorHandler";
@@ -41,7 +42,15 @@ app.get("/", (_req, res) => {
 
 // Health check
 app.get("/api/health", (_req, res) => {
-  res.status(200).json({ success: true, message: "Server is healthy", timestamp: new Date().toISOString() });
+  const dbState = mongoose.connection.readyState; // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+  const dbStatus = dbState === 1 ? "connected" : dbState === 2 ? "connecting" : "disconnected";
+  const isHealthy = dbState === 1;
+  res.status(isHealthy ? 200 : 503).json({
+    success: isHealthy,
+    message: isHealthy ? "Server is healthy" : "Server running but database unavailable",
+    database: dbStatus,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // API routes
@@ -64,24 +73,25 @@ app.use(errorHandler);
 
 // Start server
 const startServer = async (): Promise<void> => {
+  let dbConnected = false;
   try {
     await connectDB();
-
-    app.listen(config.port, "0.0.0.0", () => {
-      console.log("");
-      console.log("==========================================");
-      console.log(`  Server running in ${config.nodeEnv} mode`);
-      console.log(`  Local:   http://localhost:${config.port}`);
-      console.log(`  API:     http://localhost:${config.port}/api`);
-      console.log(`  Health:  http://localhost:${config.port}/api/health`);
-      console.log(`  MongoDB: ${config.mongodbUri}`);
-      console.log("==========================================");
-      console.log("");
-    });
+    dbConnected = true;
   } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
+    console.error("Starting server without database connection. Some features will be unavailable.");
   }
+
+  app.listen(config.port, "0.0.0.0", () => {
+    console.log("");
+    console.log("==========================================");
+    console.log(`  Server running in ${config.nodeEnv} mode`);
+    console.log(`  Local:   http://localhost:${config.port}`);
+    console.log(`  API:     http://localhost:${config.port}/api`);
+    console.log(`  Health:  http://localhost:${config.port}/api/health`);
+    console.log(`  MongoDB: ${dbConnected ? "Connected" : "Disconnected"}`);
+    console.log("==========================================");
+    console.log("");
+  });
 };
 
 // Handle uncaught errors
