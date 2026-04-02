@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("./config"));
 const database_1 = __importDefault(require("./config/database"));
 const errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
@@ -41,7 +42,15 @@ app.get("/", (_req, res) => {
 });
 // Health check
 app.get("/api/health", (_req, res) => {
-    res.status(200).json({ success: true, message: "Server is healthy", timestamp: new Date().toISOString() });
+    const dbState = mongoose_1.default.connection.readyState; // 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+    const dbStatus = dbState === 1 ? "connected" : dbState === 2 ? "connecting" : "disconnected";
+    const isHealthy = dbState === 1;
+    res.status(isHealthy ? 200 : 503).json({
+        success: isHealthy,
+        message: isHealthy ? "Server is healthy" : "Server running but database unavailable",
+        database: dbStatus,
+        timestamp: new Date().toISOString(),
+    });
 });
 // API routes
 app.use("/api/auth", auth_route_1.default);
@@ -60,24 +69,25 @@ app.all("*", (req, _res, next) => {
 app.use(errorHandler_1.default);
 // Start server
 const startServer = async () => {
+    let dbConnected = false;
     try {
         await (0, database_1.default)();
-        app.listen(config_1.default.port, "0.0.0.0", () => {
-            console.log("");
-            console.log("==========================================");
-            console.log(`  Server running in ${config_1.default.nodeEnv} mode`);
-            console.log(`  Local:   http://localhost:${config_1.default.port}`);
-            console.log(`  API:     http://localhost:${config_1.default.port}/api`);
-            console.log(`  Health:  http://localhost:${config_1.default.port}/api/health`);
-            console.log(`  MongoDB: ${config_1.default.mongodbUri}`);
-            console.log("==========================================");
-            console.log("");
-        });
+        dbConnected = true;
     }
     catch (error) {
-        console.error("Failed to start server:", error);
-        process.exit(1);
+        console.error("Starting server without database connection. Some features will be unavailable.");
     }
+    app.listen(config_1.default.port, "0.0.0.0", () => {
+        console.log("");
+        console.log("==========================================");
+        console.log(`  Server running in ${config_1.default.nodeEnv} mode`);
+        console.log(`  Local:   http://localhost:${config_1.default.port}`);
+        console.log(`  API:     http://localhost:${config_1.default.port}/api`);
+        console.log(`  Health:  http://localhost:${config_1.default.port}/api/health`);
+        console.log(`  MongoDB: ${dbConnected ? "Connected" : "Disconnected"}`);
+        console.log("==========================================");
+        console.log("");
+    });
 };
 // Handle uncaught errors
 process.on("unhandledRejection", (err) => {
