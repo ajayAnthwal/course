@@ -55,7 +55,7 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden cursor-pointer"
           onClick={onClose}
         />
       )}

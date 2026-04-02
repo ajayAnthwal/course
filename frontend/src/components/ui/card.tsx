@@ -24,7 +24,7 @@ export function Card({ children, className, hover = false, padding = "md", borde
         bordered && "border border-neutral-200/80",
         "shadow-sm",
         hover && [
-          "hover:shadow-lg hover:shadow-neutral-200/50 hover:border-neutral-300/80",
+          "cursor-pointer hover:shadow-lg hover:shadow-neutral-200/50 hover:border-neutral-300/80",
           "transition-all duration-300 ease-out",
           "hover:-translate-y-0.5",
         ],
