@@ -92,9 +92,9 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-xs text-text-muted">
             By creating an account, you agree to our{" "}
-            <a href="#" className="text-primary-600 hover:underline">Terms of Service</a>{" "}
+            <Link href="#" className="text-primary-600 hover:underline">Terms of Service</Link>{" "}
             and{" "}
-            <a href="#" className="text-primary-600 hover:underline">Privacy Policy</a>
+            <Link href="#" className="text-primary-600 hover:underline">Privacy Policy</Link>
           </p>
         </div>
       </div>

@@ -58,9 +58,9 @@ export function LoginForm() {
           />
           Remember me
         </label>
-        <a href="#" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+        <Link href="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
           Forgot password?
-        </a>
+        </Link>
       </div>
 
       <Button type="submit" className="w-full" size="lg" isLoading={isLoggingIn}>

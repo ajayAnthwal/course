@@ -23,9 +23,9 @@ export function DashboardLayout({ children, role, userName }: DashboardLayoutPro
       <DashboardSidebar role={role} userName={userName || user?.name} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main area */}
-      <div className="flex-1 flex flex-col lg:ml-64">
+      <div className="flex-1 flex flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-neutral-200/60">
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-neutral-200/60 !hidden">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             {/* Mobile menu button */}
             <button

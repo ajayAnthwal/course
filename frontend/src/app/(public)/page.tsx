@@ -1,13 +1,34 @@
 "use client";
 
+import { Suspense, lazy } from "react";
 import Link from "next/link";
-import { Button, Badge, Card, CardContent } from "@/components/ui";
-import { FeaturedColleges } from "@/features/colleges";
+import { Button, Badge, Card, CardContent, Skeleton } from "@/components/ui";
 import { useCollegeStats } from "@/features/colleges";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useSiteStats } from "@/features/stats/hooks/useStats";
 import { useTestimonials } from "@/features/testimonials/hooks/useTestimonials";
 import { useLatestNews } from "@/features/news/hooks/useNews";
+
+const FeaturedColleges = lazy(() => import("@/features/colleges/components/featured-colleges").then(mod => ({ default: mod.FeaturedColleges })));
+
+function SectionSkeleton() {
+  return (
+    <div className="py-20 bg-neutral-50">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <Skeleton className="h-10 w-64 mx-auto mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-6">
+              <Skeleton className="h-48 rounded-xl mb-4" />
+              <Skeleton className="h-5 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
   const { data: statsData } = useCollegeStats();
@@ -190,7 +211,9 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════ FEATURED COLLEGES ═══════════════════════ */}
-      <FeaturedColleges />
+      <Suspense fallback={<SectionSkeleton />}>
+        <FeaturedColleges />
+      </Suspense>
 
       {/* ═══════════════════════ WHY CHOOSE US ═══════════════════════ */}
       <section className="py-20 bg-white">
