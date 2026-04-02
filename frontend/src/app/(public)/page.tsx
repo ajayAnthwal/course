@@ -4,92 +4,53 @@ import Link from "next/link";
 import { Button, Badge, Card, CardContent } from "@/components/ui";
 import { FeaturedColleges } from "@/features/colleges";
 import { useCollegeStats } from "@/features/colleges";
-
-const categories = [
-  { name: "Engineering", icon: "⚙️", count: "2,500+", color: "from-blue-500 to-indigo-600" },
-  { name: "Management", icon: "📊", count: "1,200+", color: "from-emerald-500 to-teal-600" },
-  { name: "Medical", icon: "🩺", count: "800+", color: "from-rose-500 to-pink-600" },
-  { name: "Law", icon: "⚖️", count: "600+", color: "from-amber-500 to-orange-600" },
-  { name: "Design", icon: "🎨", count: "400+", color: "from-purple-500 to-violet-600" },
-  { name: "Science", icon: "🔬", count: "1,800+", color: "from-cyan-500 to-blue-600" },
-];
-
-const stats = [
-  { value: "10,000+", label: "Colleges Listed", icon: "🏛️" },
-  { value: "50,000+", label: "Students Helped", icon: "🎓" },
-  { value: "500+", label: "Expert Counselors", icon: "👨‍🏫" },
-  { value: "95%", label: "Satisfaction Rate", icon: "⭐" },
-];
-
-const testimonials = [
-  {
-    name: "Priya Sharma",
-    role: "B.Tech Student, IIT Delhi",
-    content: "EduPortal helped me find the perfect college. The detailed information and counseling made my decision easy.",
-    avatar: "PS",
-    rating: 5,
-  },
-  {
-    name: "Rahul Verma",
-    role: "MBA Student, IIM Ahmedabad",
-    content: "The college comparison feature is incredible. I could compare fees, placements, and ratings side by side.",
-    avatar: "RV",
-    rating: 5,
-  },
-  {
-    name: "Ananya Patel",
-    role: "Medical Student, AIIMS",
-    content: "From exam preparation to college selection, EduPortal guided me through every step of my journey.",
-    avatar: "AP",
-    rating: 5,
-  },
-];
-
-const news = [
-  {
-    title: "JEE Main 2026 Registration Opens: Key Dates & Eligibility",
-    category: "Exam Updates",
-    date: "Mar 28, 2026",
-    readTime: "5 min read",
-    image: "📐",
-  },
-  {
-    title: "Top 10 Engineering Colleges in India: NIRF Rankings 2026",
-    category: "Rankings",
-    date: "Mar 25, 2026",
-    readTime: "8 min read",
-    image: "🏆",
-  },
-  {
-    title: "CAT 2026: New Pattern Changes You Must Know",
-    category: "Exam Updates",
-    date: "Mar 22, 2026",
-    readTime: "4 min read",
-    image: "📝",
-  },
-];
+import { useCategories } from "@/features/categories/hooks/useCategories";
+import { useSiteStats } from "@/features/stats/hooks/useStats";
+import { useTestimonials } from "@/features/testimonials/hooks/useTestimonials";
+import { useLatestNews } from "@/features/news/hooks/useNews";
 
 export default function HomePage() {
   const { data: statsData } = useCollegeStats();
+  const { data: categoriesData } = useCategories();
+  const { data: siteStatsData } = useSiteStats();
+  const { data: testimonialsData } = useTestimonials();
+  const { data: newsData } = useLatestNews();
+
+  const categories = categoriesData?.data || [];
+  const siteStats = siteStatsData?.data;
+  const testimonials = testimonialsData?.data || [];
+  const news = newsData?.data || [];
+
+  const statsDisplay = [
+    { value: siteStats ? `${siteStats.colleges}+` : "10,000+", label: "Colleges Listed", icon: "🏛️" },
+    { value: siteStats ? `${siteStats.students}+` : "50,000+", label: "Students Helped", icon: "🎓" },
+    { value: siteStats ? `${siteStats.courses}+` : "500+", label: "Courses Available", icon: "📚" },
+    { value: "95%", label: "Satisfaction Rate", icon: "⭐" },
+  ];
+
+  const defaultCategories = [
+    { name: "Engineering", icon: "⚙️", count: 2500, color: "#6366f1" },
+    { name: "Management", icon: "📊", count: 1200, color: "#10b981" },
+    { name: "Medical", icon: "🩺", count: 800, color: "#f43f5e" },
+    { name: "Law", icon: "⚖️", count: 600, color: "#f59e0b" },
+    { name: "Design", icon: "🎨", count: 400, color: "#8b5cf6" },
+    { name: "Science", icon: "🔬", count: 1800, color: "#06b6d4" },
+  ];
+
+  const displayCategories = categories.length > 0 ? categories : defaultCategories;
 
   return (
     <div className="overflow-hidden">
       {/* ═══════════════════════ HERO SECTION ═══════════════════════ */}
       <section className="relative gradient-hero min-h-[90vh] flex items-center overflow-hidden">
-        {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 w-72 h-72 bg-primary-500/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-400/5 rounded-full blur-3xl" />
-          {/* Grid Pattern */}
-          <div className="absolute inset-0 opacity-[0.03]" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left Content */}
             <div className="animate-fade-in-up">
               <Badge variant="primary" size="lg" className="mb-6 bg-white/10 text-white border-white/20 backdrop-blur-sm">
                 <span className="w-2 h-2 bg-secondary-400 rounded-full animate-pulse" />
@@ -107,7 +68,6 @@ export default function HomePage() {
                 Your journey to the perfect education starts here.
               </p>
 
-              {/* Search Bar */}
               <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-2 border border-white/10 mb-8">
                 <div className="flex flex-col sm:flex-row gap-2">
                   <div className="flex-1 relative">
@@ -128,21 +88,19 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Quick Links */}
               <div className="flex flex-wrap gap-2">
-                {["Engineering", "Medical", "MBA", "Law", "Design"].map((tag) => (
+                {displayCategories.slice(0, 5).map((cat) => (
                   <Link
-                    key={tag}
-                    href={`/colleges`}
+                    key={cat.name}
+                    href="/colleges"
                     className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-all"
                   >
-                    {tag}
+                    {cat.name}
                   </Link>
                 ))}
               </div>
             </div>
 
-            {/* Right Content - Stats Cards */}
             <div className="hidden lg:block animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -169,8 +127,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        {/* Bottom Gradient Fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
       </section>
 
@@ -189,14 +145,10 @@ export default function HomePage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
+            {statsDisplay.map((stat) => (
               <div key={stat.label} className="text-center group">
                 <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
-                <p className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-1">
-                  {statsData?.data ? (
-                    stat.label === "Colleges Listed" ? `${statsData.data.total}+` : stat.value
-                  ) : stat.value}
-                </p>
+                <p className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-1">{stat.value}</p>
                 <p className="text-sm text-neutral-500 font-medium">{stat.label}</p>
               </div>
             ))}
@@ -217,15 +169,18 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((cat) => (
+            {displayCategories.map((cat) => (
               <Link key={cat.name} href="/colleges">
                 <Card hover className="text-center group cursor-pointer">
                   <CardContent>
-                    <div className={`w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      {cat.icon}
+                    <div
+                      className="w-14 h-14 mx-auto rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300"
+                      style={{ background: cat.color || "#6366f1" }}
+                    >
+                      {cat.icon || "📁"}
                     </div>
                     <h3 className="font-semibold text-neutral-900 text-sm mb-1">{cat.name}</h3>
-                    <p className="text-xs text-neutral-500">{cat.count} colleges</p>
+                    <p className="text-xs text-neutral-500">{cat.count}+ colleges</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -251,26 +206,10 @@ export default function HomePage() {
               </p>
               <div className="space-y-6">
                 {[
-                  {
-                    title: "Comprehensive Database",
-                    desc: "Access detailed information about 10,000+ colleges including fees, placements, rankings, and reviews.",
-                    icon: "📊",
-                  },
-                  {
-                    title: "Expert Counseling",
-                    desc: "Get personalized guidance from 500+ education experts who understand your goals and aspirations.",
-                    icon: "🎯",
-                  },
-                  {
-                    title: "Compare & Decide",
-                    desc: "Compare colleges side-by-side on multiple parameters to make the best decision for your future.",
-                    icon: "⚖️",
-                  },
-                  {
-                    title: "Application Support",
-                    desc: "End-to-end support from college selection to admission, including document guidance and deadlines.",
-                    icon: "✅",
-                  },
+                  { title: "Comprehensive Database", desc: "Access detailed information about 10,000+ colleges including fees, placements, rankings, and reviews.", icon: "📊" },
+                  { title: "Expert Counseling", desc: "Get personalized guidance from 500+ education experts who understand your goals and aspirations.", icon: "🎯" },
+                  { title: "Compare & Decide", desc: "Compare colleges side-by-side on multiple parameters to make the best decision for your future.", icon: "⚖️" },
+                  { title: "Application Support", desc: "End-to-end support from college selection to admission, including document guidance and deadlines.", icon: "✅" },
                 ].map((feature) => (
                   <div key={feature.title} className="flex gap-4 group">
                     <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-xl shrink-0 group-hover:bg-primary-100 transition-colors">
@@ -307,7 +246,6 @@ export default function HomePage() {
                   <Button className="w-full" variant="gradient">Get Your Predictions</Button>
                 </div>
               </div>
-              {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 w-20 h-20 bg-accent-400/20 rounded-2xl blur-xl" />
               <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-secondary-400/20 rounded-full blur-xl" />
             </div>
@@ -327,27 +265,33 @@ export default function HomePage() {
               Join thousands of students who found their dream college through EduPortal.
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial) => (
-              <Card key={testimonial.name} hover padding="lg">
-                <div className="flex items-center gap-1 mb-4">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <span key={i} className="text-accent-400 text-sm">⭐</span>
-                  ))}
-                </div>
-                <p className="text-neutral-600 leading-relaxed mb-6">&ldquo;{testimonial.content}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">{testimonial.avatar}</span>
+          {testimonials.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {testimonials.map((t) => (
+                <Card key={t._id} hover padding="lg">
+                  <div className="flex items-center gap-1 mb-4">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <span key={i} className="text-accent-400 text-sm">⭐</span>
+                    ))}
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-neutral-900">{testimonial.name}</p>
-                    <p className="text-xs text-neutral-500">{testimonial.role}</p>
+                  <p className="text-neutral-600 leading-relaxed mb-6">&ldquo;{t.content}&rdquo;</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center">
+                      <span className="text-xs font-bold text-white">{t.name.split(" ").map(n => n[0]).join("")}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-neutral-900">{t.name}</p>
+                      <p className="text-xs text-neutral-500">{t.role}</p>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-neutral-400">
+              <p className="text-lg">No testimonials yet</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -366,25 +310,39 @@ export default function HomePage() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {news.map((article) => (
-              <Card key={article.title} hover padding="none" className="overflow-hidden group">
-                <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center">
-                  <span className="text-6xl group-hover:scale-110 transition-transform duration-300">{article.image}</span>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="primary" size="sm">{article.category}</Badge>
-                    <span className="text-xs text-neutral-400">{article.readTime}</span>
-                  </div>
-                  <h3 className="font-semibold text-neutral-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-xs text-neutral-500">{article.date}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {news.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-6">
+              {news.slice(0, 3).map((article) => (
+                <Link key={article._id} href={`/news/${article.slug}`}>
+                  <Card hover padding="none" className="overflow-hidden group h-full">
+                    <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center">
+                      {article.image ? (
+                        <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-6xl group-hover:scale-110 transition-transform duration-300">📰</span>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="primary" size="sm">{article.category}</Badge>
+                        <span className="text-xs text-neutral-400">{article.readTime}</span>
+                      </div>
+                      <h3 className="font-semibold text-neutral-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-xs text-neutral-500">
+                        {new Date(article.publishedAt).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
+                      </p>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-neutral-400">
+              <p className="text-lg">No articles yet</p>
+            </div>
+          )}
           <div className="sm:hidden mt-6 text-center">
             <Link href="/news" className="text-sm font-medium text-primary-600">View All Articles →</Link>
           </div>
@@ -403,7 +361,7 @@ export default function HomePage() {
             Ready to Start Your Journey?
           </h2>
           <p className="text-lg text-primary-200/80 mb-8 max-w-2xl mx-auto">
-            Join 50,000+ students who have already found their dream college through EduPortal. Your future starts with a single step.
+            Join thousands of students who have already found their dream college through EduPortal. Your future starts with a single step.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">

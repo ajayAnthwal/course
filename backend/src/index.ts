@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 import mongoose from "mongoose";
 import config from "./config";
 import connectDB from "./config/database";
@@ -13,6 +14,16 @@ import examRoutes from "./modules/exam/route/exam.route";
 import newsRoutes from "./modules/news/route/news.route";
 import leadRoutes from "./modules/lead/route/lead.route";
 import paymentRoutes from "./modules/payment/route/payment.route";
+import categoryRoutes from "./modules/category/route/category.route";
+import blogRoutes from "./modules/blog/route/blog.route";
+import testimonialRoutes from "./modules/testimonial/route/testimonial.route";
+import College from "./modules/college/model/college.model";
+import Course from "./modules/course/model/course.model";
+import User from "./modules/user/model/user.model";
+import NewsModel from "./modules/news/model/news.model";
+import BlogModel from "./modules/blog/model/blog.model";
+import CategoryModel from "./modules/category/model/category.model";
+import TestimonialModel from "./modules/testimonial/model/testimonial.model";
 import AppError from "./utils/appError";
 
 const app = express();
@@ -39,6 +50,9 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Root route
 app.get("/", (_req, res) => {
@@ -67,6 +81,30 @@ app.use("/api/exams", examRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/testimonials", testimonialRoutes);
+
+// Site stats (calculated from DB)
+app.get("/api/stats", async (_req, res) => {
+  try {
+    const [colleges, courses, students, news, blogs, categories, testimonials] = await Promise.all([
+      College.countDocuments({ isActive: true }),
+      Course.countDocuments({ isActive: true }),
+      User.countDocuments({ role: "student", isActive: true }),
+      NewsModel.countDocuments({ isActive: true }),
+      BlogModel.countDocuments({ isActive: true }),
+      CategoryModel.countDocuments({ isActive: true }),
+      TestimonialModel.countDocuments({ isActive: true }),
+    ]);
+    res.status(200).json({
+      success: true,
+      data: { colleges, courses, students, news, blogs, categories, testimonials },
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
 
 // 404 handler
 app.all("*", (req, _res, next) => {

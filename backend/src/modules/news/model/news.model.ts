@@ -21,7 +21,7 @@ export interface INews extends Document {
 const newsSchema = new Schema<INews>(
   {
     title: { type: String, required: true, trim: true, maxlength: 500 },
-    slug: { type: String, unique: true, lowercase: true },
+    slug: { type: String, lowercase: true },
     excerpt: { type: String, required: true, maxlength: 500 },
     content: { type: String, required: true, maxlength: 50000 },
     image: String,
@@ -54,6 +54,7 @@ newsSchema.pre("save", function (next) {
 newsSchema.index({ category: 1, isActive: 1 });
 newsSchema.index({ featured: 1 });
 newsSchema.index({ publishedAt: -1 });
+newsSchema.index({ slug: 1 }, { unique: true });
 newsSchema.index({ title: "text", excerpt: "text", content: "text" });
 
 const News = mongoose.model<INews>("News", newsSchema);

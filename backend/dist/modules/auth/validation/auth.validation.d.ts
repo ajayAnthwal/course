@@ -5,13 +5,13 @@ export declare const registerSchema: z.ZodObject<{
         email: z.ZodString;
         password: z.ZodString;
         confirmPassword: z.ZodString;
-        role: z.ZodDefault<z.ZodEnum<["student", "college"]>>;
+        role: z.ZodDefault<z.ZodEnum<["student", "teacher"]>>;
         phone: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         name: string;
         email: string;
         password: string;
-        role: "student" | "college";
+        role: "student" | "teacher";
         confirmPassword: string;
         phone?: string | undefined;
     }, {
@@ -19,13 +19,13 @@ export declare const registerSchema: z.ZodObject<{
         email: string;
         password: string;
         confirmPassword: string;
-        role?: "student" | "college" | undefined;
+        role?: "student" | "teacher" | undefined;
         phone?: string | undefined;
     }>, {
         name: string;
         email: string;
         password: string;
-        role: "student" | "college";
+        role: "student" | "teacher";
         confirmPassword: string;
         phone?: string | undefined;
     }, {
@@ -33,7 +33,7 @@ export declare const registerSchema: z.ZodObject<{
         email: string;
         password: string;
         confirmPassword: string;
-        role?: "student" | "college" | undefined;
+        role?: "student" | "teacher" | undefined;
         phone?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
@@ -41,7 +41,7 @@ export declare const registerSchema: z.ZodObject<{
         name: string;
         email: string;
         password: string;
-        role: "student" | "college";
+        role: "student" | "teacher";
         confirmPassword: string;
         phone?: string | undefined;
     };
@@ -51,7 +51,7 @@ export declare const registerSchema: z.ZodObject<{
         email: string;
         password: string;
         confirmPassword: string;
-        role?: "student" | "college" | undefined;
+        role?: "student" | "teacher" | undefined;
         phone?: string | undefined;
     };
 }>;

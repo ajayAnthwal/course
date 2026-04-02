@@ -15,7 +15,7 @@ exports.registerSchema = zod_1.z.object({
             .max(100, "Password cannot exceed 100 characters")
             .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain at least one uppercase letter, one lowercase letter, and one number"),
         confirmPassword: zod_1.z.string(),
-        role: zod_1.z.enum(["student", "college"]).default("student"),
+        role: zod_1.z.enum(["student", "teacher"]).default("student"),
         phone: zod_1.z.string().optional(),
     }).refine((data) => data.password === data.confirmPassword, {
         message: "Passwords do not match",

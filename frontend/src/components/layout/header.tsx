@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/courses", label: "Courses", description: "Explore programs" },
   { href: "/exams", label: "Exams", description: "Entrance exams guide" },
   { href: "/news", label: "News", description: "Latest updates" },
+  { href: "/blogs", label: "Blog", description: "Insights and guides" },
 ];
 
 export function Header() {

@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const newsSchema = new mongoose_1.Schema({
     title: { type: String, required: true, trim: true, maxlength: 500 },
-    slug: { type: String, unique: true, lowercase: true },
+    slug: { type: String, lowercase: true },
     excerpt: { type: String, required: true, maxlength: 500 },
     content: { type: String, required: true, maxlength: 50000 },
     image: String,
@@ -65,6 +65,7 @@ newsSchema.pre("save", function (next) {
 newsSchema.index({ category: 1, isActive: 1 });
 newsSchema.index({ featured: 1 });
 newsSchema.index({ publishedAt: -1 });
+newsSchema.index({ slug: 1 }, { unique: true });
 newsSchema.index({ title: "text", excerpt: "text", content: "text" });
 const News = mongoose_1.default.model("News", newsSchema);
 exports.default = News;

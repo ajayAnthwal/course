@@ -195,3 +195,49 @@ export interface NewsArticle {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  image?: string;
+  color?: string;
+  count: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Blog {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  image?: string;
+  category: string;
+  author: string;
+  authorAvatar?: string;
+  tags: string[];
+  readTime: string;
+  featured: boolean;
+  isActive: boolean;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Testimonial {
+  _id: string;
+  name: string;
+  role: string;
+  avatar?: string;
+  rating: number;
+  content: string;
+  college?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
