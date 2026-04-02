@@ -39,7 +39,7 @@ function AdminSettingsContent() {
                 <h2 className="text-lg font-semibold text-neutral-900">{user?.name}</h2>
                 <p className="text-sm text-neutral-500 mt-1">{user?.email}</p>
                 <div className="mt-3"><Badge variant="danger">Admin</Badge></div>
-                <p className="text-xs text-neutral-400 mt-4">Member since {user?.createdAt ? formatDate(user.createdAt) : "N/A"}</p>
+                <p className="text-xs text-neutral-500 mt-4">Member since {user?.createdAt ? formatDate(user.createdAt) : "N/A"}</p>
               </CardContent>
             </Card>
           </div>
@@ -64,10 +64,10 @@ function AdminSettingsContent() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div><p className="text-xs text-neutral-400 uppercase mb-1">Name</p><p className="text-sm font-medium">{user?.name}</p></div>
-                    <div><p className="text-xs text-neutral-400 uppercase mb-1">Email</p><p className="text-sm">{user?.email}</p></div>
-                    <div><p className="text-xs text-neutral-400 uppercase mb-1">Phone</p><p className="text-sm">{user?.phone || "Not provided"}</p></div>
-                    <div><p className="text-xs text-neutral-400 uppercase mb-1">Role</p><Badge variant="danger" size="sm">Admin</Badge></div>
+                    <div><p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Name</p><p className="text-sm font-semibold text-neutral-900">{user?.name}</p></div>
+                    <div><p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Email</p><p className="text-sm font-medium text-neutral-900">{user?.email}</p></div>
+                    <div><p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Phone</p><p className="text-sm font-medium text-neutral-900">{user?.phone || "Not provided"}</p></div>
+                    <div><p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">Role</p><Badge variant="danger" size="sm">Admin</Badge></div>
                   </div>
                 )}
               </CardContent>
