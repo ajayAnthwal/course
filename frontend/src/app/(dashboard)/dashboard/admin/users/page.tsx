@@ -14,6 +14,7 @@ const roleOptions = [
   { label: "Student", value: "student" },
   { label: "College", value: "college" },
   { label: "Teacher", value: "teacher" },
+  { label: "Parent", value: "parent" },
 ];
 
 const roleBadge: Record<UserRole, { variant: "danger" | "primary" | "secondary" | "warning" | "default" }> = {
@@ -21,10 +22,11 @@ const roleBadge: Record<UserRole, { variant: "danger" | "primary" | "secondary" 
   student: { variant: "primary" },
   college: { variant: "secondary" },
   teacher: { variant: "warning" },
+  parent: { variant: "default" },
 };
 
 const roleIcon: Record<UserRole, string> = {
-  admin: "👑", student: "🎓", college: "🏛️", teacher: "👨‍🏫",
+  admin: "👑", student: "🎓", college: "🏛️", teacher: "👨‍🏫", parent: "👨‍👩‍👧",
 };
 
 function AdminUsersContent() {

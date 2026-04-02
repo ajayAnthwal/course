@@ -23,11 +23,16 @@ const navItems: Record<UserRole, NavItem[]> = {
     { label: "Blogs", href: "/dashboard/admin/blogs", icon: "✍️" },
     { label: "Testimonials", href: "/dashboard/admin/testimonials", icon: "💬" },
     { label: "Leads", href: "/dashboard/admin/leads", icon: "📋" },
+    { label: "Import Data", href: "/dashboard/admin/import", icon: "📥" },
     { label: "Settings", href: "/dashboard/admin/settings", icon: "⚙️" },
   ],
   student: [
     { label: "Overview", href: "/dashboard/student", icon: "📊" },
-    { label: "My Enquiries", href: "/dashboard/student/enquiries", icon: "📋" },
+    { label: "My Applications", href: "/dashboard/student/applications", icon: "📝" },
+    { label: "Wishlist", href: "/dashboard/student/wishlist", icon: "❤️" },
+    { label: "Documents", href: "/dashboard/student/documents", icon: "📄" },
+    { label: "Payments", href: "/dashboard/student/payment", icon: "💳" },
+    { label: "Enquiries", href: "/dashboard/student/enquiries", icon: "💬" },
     { label: "Profile", href: "/dashboard/student/profile", icon: "👤" },
   ],
   college: [
@@ -42,6 +47,13 @@ const navItems: Record<UserRole, NavItem[]> = {
     { label: "Courses", href: "/dashboard/teacher/courses", icon: "📚" },
     { label: "Students", href: "/dashboard/teacher/students", icon: "👨‍🎓" },
     { label: "Profile", href: "/dashboard/teacher/profile", icon: "👤" },
+  ],
+  parent: [
+    { label: "Overview", href: "/dashboard/parent", icon: "📊" },
+    { label: "My Child's Applications", href: "/dashboard/parent/applications", icon: "📝" },
+    { label: "Track Status", href: "/dashboard/parent/status", icon: "🔍" },
+    { label: "Messages", href: "/dashboard/parent/messages", icon: "💬" },
+    { label: "Profile", href: "/dashboard/parent/profile", icon: "👤" },
   ],
 };
 

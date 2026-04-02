@@ -1,0 +1,30 @@
+{
+  "HomePage": {
+    "title": "Discover Your Dream College",
+    "subtitle": "Explore 10,000+ colleges, compare courses, and get expert guidance",
+    "search": "Search colleges, courses, or exams...",
+    "searchButton": "Search Now"
+  },
+  "Colleges": {
+    "title": "Top Colleges in India",
+    "filter": "Filters",
+    "sort": "Sort by",
+    "apply": "Apply Now",
+    "compare": "Compare"
+  },
+  "Common": {
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading..."
+  },
+  "Auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?"
+  }
+}

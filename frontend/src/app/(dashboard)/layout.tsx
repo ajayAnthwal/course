@@ -13,6 +13,7 @@ const rolePrefixes: Record<UserRole, string> = {
   teacher: "/dashboard/teacher",
   college: "/dashboard/college",
   admin: "/dashboard/admin",
+  parent: "/dashboard/parent",
 };
 
 export default function DashboardGroupLayout({

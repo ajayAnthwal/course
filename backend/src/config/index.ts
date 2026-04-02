@@ -29,6 +29,12 @@ const config = {
     msg91SenderId: process.env.MSG91_SENDER_ID || "",
     msg91TemplateId: process.env.MSG91_TEMPLATE_ID || "",
   },
+  whatsapp: {
+    apiUrl: process.env.WHATSAPP_API_URL || "https://api.whatsapp.business",
+    apiKey: process.env.WHATSAPP_API_KEY || "",
+    phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || "",
+    fromNumber: process.env.WHATSAPP_FROM_NUMBER || "",
+  },
 } as const;
 
 export default config;

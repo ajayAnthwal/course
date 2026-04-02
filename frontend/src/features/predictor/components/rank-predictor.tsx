@@ -42,7 +42,7 @@ export default function RankPredictor() {
     if (percentile >= 95) return "success";
     if (percentile >= 80) return "primary";
     if (percentile >= 50) return "warning";
-    return "error";
+    return "danger";
   };
 
   return (
@@ -95,14 +95,8 @@ export default function RankPredictor() {
               <div className="text-center p-4 bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl">
                 <p className="text-sm text-neutral-600 mb-1">Approximate Rank</p>
                 <p className="text-3xl font-bold text-accent-600">#{result.rank.toLocaleString()}</p>
-                <p className="text-xs text-neutral-500 mt-2">Out of {result.totalCandidates.toLocaleString()} candidates</p>
               </div>
             </div>
-            {result.categoryRank && (
-              <div className="mt-4 text-center p-3 bg-neutral-50 rounded-lg">
-                <p className="text-sm text-neutral-600">Category Rank: <span className="font-semibold">#{result.categoryRank.toLocaleString()}</span></p>
-              </div>
-            )}
           </div>
         )}
       </CardContent>
