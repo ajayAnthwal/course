@@ -81,3 +81,39 @@ export const getCollegeStats = catchAsync(async (_req: Request, res: Response, _
     data: stats,
   });
 });
+
+export const verifyCollege = catchAsync(async (req: any, res: Response, _next: NextFunction) => {
+  const { status, reason } = req.body;
+  const college = await collegeService.verifyCollege(
+    req.params.id,
+    status,
+    reason,
+    req.user?.id
+  );
+
+  res.status(200).json({
+    success: true,
+    message: `College ${status} successfully`,
+    data: college,
+  });
+});
+
+export const toggleCollegeActive = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+  const college = await collegeService.toggleActive(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: college.isActive ? "College activated" : "College deactivated",
+    data: college,
+  });
+});
+
+export const getPendingVerification = catchAsync(async (_req: Request, res: Response, _next: NextFunction) => {
+  const colleges = await collegeService.getPendingVerification();
+
+  res.status(200).json({
+    success: true,
+    message: "Pending verification colleges retrieved successfully",
+    data: colleges,
+  });
+});

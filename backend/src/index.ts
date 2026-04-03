@@ -19,6 +19,11 @@ import blogRoutes from "./modules/blog/route/blog.route";
 import testimonialRoutes from "./modules/testimonial/route/testimonial.route";
 import notificationRoutes from "./modules/notification/route/notification.route";
 import roleRoutes from "./modules/role/route/role.route";
+import followupRoutes from "./modules/followup/route/followup.route";
+import activityLogRoutes from "./modules/activity-log/route/activity-log.route";
+import documentRoutes from "./modules/document/route/document.route";
+import settingsRoutes from "./modules/settings/route/settings.route";
+import analyticsRoutes from "./modules/analytics/route/analytics.route";
 import College from "./modules/college/model/college.model";
 import Course from "./modules/course/model/course.model";
 import User from "./modules/user/model/user.model";
@@ -52,6 +57,17 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Performance: Cache-Control headers for static assets and API responses
+app.use("/uploads", (_req, res, next) => {
+  res.set("Cache-Control", "public, max-age=31536000, immutable");
+  next();
+});
+
+app.use("/api/health", (_req, res, next) => {
+  res.set("Cache-Control", "no-store, max-age=0, must-revalidate");
+  next();
+});
 
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
@@ -88,6 +104,11 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/roles", roleRoutes);
+app.use("/api/followups", followupRoutes);
+app.use("/api/activity-logs", activityLogRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/settings", settingsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Site stats (calculated from DB)
 app.get("/api/stats", async (_req, res) => {

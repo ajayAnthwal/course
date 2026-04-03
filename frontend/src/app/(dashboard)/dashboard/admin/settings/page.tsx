@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, useToast, Textarea, Modal } from "@/components/ui";
@@ -22,13 +22,25 @@ function AdminSettingsContent() {
     whatsapp: { phoneNumber: "", apiKey: "", enabled: false },
   });
   const [systemSettings, setSystemSettings] = useState({
-    siteName: "EduPortal",
-    supportEmail: "support@eduportal.com",
-    supportPhone: "+91 1234567890",
+    siteName: "",
+    supportEmail: "",
+    supportPhone: "",
     allowRegistration: true,
     requireEmailVerification: true,
     maintenanceMode: false,
   });
+  const [loadingSettings, setLoadingSettings] = useState(true);
+
+  useEffect(() => {
+    apiClient.get("/settings")
+      .then((res) => {
+        const settings: Record<string, any> = {};
+        res.data.data?.forEach((s: any) => { settings[s.key] = s.value; });
+        setSystemSettings(prev => ({ ...prev, ...settings }));
+      })
+      .catch(() => {})
+      .finally(() => setLoadingSettings(false));
+  }, []);
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [keyValue, setKeyValue] = useState("");
@@ -52,8 +64,20 @@ function AdminSettingsContent() {
     setKeyValue("");
   };
 
-  const handleSaveSettings = () => {
-    showToast("Settings saved", "success");
+  const handleSaveSettings = async () => {
+    try {
+      await Promise.all([
+        apiClient.post("/settings", { key: "siteName", value: systemSettings.siteName, category: "general" }),
+        apiClient.post("/settings", { key: "supportEmail", value: systemSettings.supportEmail, category: "general" }),
+        apiClient.post("/settings", { key: "supportPhone", value: systemSettings.supportPhone, category: "general" }),
+        apiClient.post("/settings", { key: "allowRegistration", value: systemSettings.allowRegistration, category: "features" }),
+        apiClient.post("/settings", { key: "requireEmailVerification", value: systemSettings.requireEmailVerification, category: "features" }),
+        apiClient.post("/settings", { key: "maintenanceMode", value: systemSettings.maintenanceMode, category: "features" }),
+      ]);
+      showToast("Settings saved", "success");
+    } catch {
+      showToast("Failed to save settings", "error");
+    }
   };
 
   const tabs = [

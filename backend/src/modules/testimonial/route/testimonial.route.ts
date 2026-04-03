@@ -7,12 +7,21 @@ import { createTestimonialSchema, updateTestimonialSchema } from "../validation/
 
 const router = Router();
 
+router.get("/stats", testimonialController.getTestimonialStats);
+router.get("/pending-count", testimonialController.getPendingCount);
 router.get("/", testimonialController.getAllTestimonials);
 router.get("/:id", testimonialController.getTestimonialById);
 
 router.use(protect);
-router.post("/", restrictTo("admin"), upload.single("avatar"), validate(createTestimonialSchema), testimonialController.createTestimonial);
-router.patch("/:id", restrictTo("admin"), upload.single("avatar"), validate(updateTestimonialSchema), testimonialController.updateTestimonial);
-router.delete("/:id", restrictTo("admin"), testimonialController.deleteTestimonial);
+
+router.post("/", upload.single("avatar"), validate(createTestimonialSchema), testimonialController.createTestimonial);
+
+router.use(restrictTo("admin"));
+
+router.patch("/:id/approve", testimonialController.approveTestimonial);
+router.patch("/:id/reject", testimonialController.rejectTestimonial);
+router.patch("/:id/featured", testimonialController.toggleFeatured);
+router.patch("/:id", upload.single("avatar"), validate(updateTestimonialSchema), testimonialController.updateTestimonial);
+router.delete("/:id", testimonialController.deleteTestimonial);
 
 export default router;

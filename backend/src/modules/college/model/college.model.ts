@@ -6,6 +6,7 @@ export interface ICollege extends Document {
   description: string;
   logo?: string;
   coverImage?: string;
+  prospectus?: string;
   location: {
     city: string;
     state: string;
@@ -47,6 +48,10 @@ export interface ICollege extends Document {
   phone?: string;
   featured: boolean;
   verified: boolean;
+  verificationStatus: "pending" | "verified" | "rejected";
+  verifiedBy?: mongoose.Types.ObjectId;
+  verifiedAt?: Date;
+  rejectionReason?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -141,6 +146,15 @@ const collegeSchema = new Schema<ICollege>(
       type: Boolean,
       default: false,
     },
+    verificationStatus: {
+      type: String,
+      enum: ["pending", "verified", "rejected"],
+      default: "pending",
+    },
+    verifiedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    verifiedAt: { type: Date },
+    rejectionReason: { type: String, maxlength: 500 },
+    prospectus: String,
     isActive: {
       type: Boolean,
       default: true,

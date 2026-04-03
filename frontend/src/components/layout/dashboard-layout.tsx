@@ -1,11 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { DashboardSidebar } from "./dashboard-sidebar";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import type { UserRole } from "@/types";
+
+// Dynamic import for sidebar - loaded lazily to improve initial load
+const DashboardSidebar = dynamic(() => import("./dashboard-sidebar").then(mod => mod.DashboardSidebar), {
+  ssr: false,
+  loading: () => (
+    <aside className="w-64 bg-white border-r border-neutral-200 animate-pulse">
+      <div className="p-6 space-y-4">
+        <div className="h-8 bg-neutral-100 rounded-lg w-20" />
+        <div className="space-y-2">
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="h-10 bg-neutral-100 rounded-lg" />
+          ))}
+        </div>
+      </div>
+    </aside>
+  ),
+});
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,18 +36,24 @@ export function DashboardLayout({ children, role, userName }: DashboardLayoutPro
 
   return (
     <div className="min-h-screen bg-neutral-50 flex">
-      {/* Sidebar */}
-      <DashboardSidebar role={role} userName={userName || user?.name} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {/* Sidebar - lazy loaded via dynamic import */}
+      <DashboardSidebar 
+        role={role} 
+        userName={userName || user?.name} 
+        isOpen={sidebarOpen} 
+        onClose={() => setSidebarOpen(false)} 
+      />
 
       {/* Main area */}
       <div className="flex-1 flex flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-neutral-200/60 !hidden">
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-neutral-200/60">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
             {/* Mobile menu button */}
             <button
               className="lg:hidden p-2 rounded-xl text-neutral-600 hover:bg-neutral-100 transition-colors"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Toggle menu"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -67,7 +90,13 @@ export function DashboardLayout({ children, role, userName }: DashboardLayoutPro
                   <p className="text-[11px] text-neutral-500 capitalize">{user?.role}</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => logout()} disabled={isLoggingOut}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => logout()} 
+                disabled={isLoggingOut}
+                className="transition-colors"
+              >
                 Logout
               </Button>
             </div>

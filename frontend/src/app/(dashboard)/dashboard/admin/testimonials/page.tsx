@@ -1,26 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem, StatCard, Textarea } from "@/components/ui";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useTestimonials, useCreateTestimonial, useDeleteTestimonial } from "@/features/testimonials/hooks/useTestimonials";
 import { formatDate } from "@/lib/utils";
+import apiClient from "@/services/axios";
 import type { Testimonial } from "@/types";
+
+interface ReviewItem extends Testimonial {
+  status: "pending" | "approved" | "rejected";
+  isFeatured: boolean;
+  rejectionReason?: string;
+}
+
+const statusBadge: Record<string, { label: string; variant: "primary" | "success" | "warning" | "danger" }> = {
+  pending: { label: "Pending", variant: "warning" },
+  approved: { label: "Approved", variant: "success" },
+  rejected: { label: "Rejected", variant: "danger" },
+};
 
 function AdminTestimonialsContent() {
   const { user } = useAuth();
   const { showToast } = useToast();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [selectedForDelete, setSelectedForDelete] = useState<Testimonial | null>(null);
+  const [selectedReview, setSelectedReview] = useState<ReviewItem | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [formData, setFormData] = useState({ name: "", role: "", content: "", college: "", rating: "5" });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const { data, isLoading } = useTestimonials();
+  const { data, isLoading: testimonialsLoading } = useTestimonials();
   const createTestimonial = useCreateTestimonial();
   const deleteTestimonial = useDeleteTestimonial();
+
+  const fetchReviews = async () => {
+    setLoading(true);
+    try {
+      const [reviewsRes, statsRes] = await Promise.all([
+        apiClient.get("/testimonials", { params: { status: statusFilter || undefined, limit: 20 } }),
+        apiClient.get("/testimonials/stats"),
+      ]);
+      setReviews(reviewsRes.data.data.data || []);
+      setStats(statsRes.data.data);
+    } catch (error) {
+      console.error("Failed to fetch:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchReviews(); }, [statusFilter]);
+
+  const handleApprove = async (id: string) => {
+    try {
+      await apiClient.patch(`/testimonials/${id}/approve`);
+      showToast("Approved");
+      fetchReviews();
+    } catch (error) {
+      showToast("Failed", "error");
+    }
+  };
+
+  const handleReject = async () => {
+    if (!selectedReview) return;
+    try {
+      await apiClient.patch(`/testimonials/${selectedReview._id}/reject`, { reason: rejectReason });
+      showToast("Rejected");
+      setIsReviewOpen(false);
+      setSelectedReview(null);
+      setRejectReason("");
+      fetchReviews();
+    } catch (error) {
+      showToast("Failed", "error");
+    }
+  };
 
   const testimonials = data?.data || [];
 
@@ -53,10 +115,90 @@ function AdminTestimonialsContent() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">Testimonials</h1>
-            <p className="text-neutral-500 mt-1">Manage student testimonials and reviews.</p>
+            <h1 className="text-2xl font-bold text-neutral-900">Reviews & Ratings</h1>
+            <p className="text-neutral-500 mt-1">Manage testimonials and reviews</p>
           </div>
           <Button onClick={() => { setFormData({ name: "", role: "", content: "", college: "", rating: "5" }); setAvatarFile(null); setIsFormOpen(true); }}>+ Add Testimonial</Button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatCard label="Total" value={stats?.total ?? 0} icon={<span className="text-lg">⭐</span>} iconBg="bg-primary-50" />
+          <StatCard label="Pending" value={stats?.pending ?? 0} icon={<span className="text-lg">⏳</span>} iconBg="bg-yellow-50" />
+          <StatCard label="Approved" value={stats?.approved ?? 0} icon={<span className="text-lg">✅</span>} iconBg="bg-green-50" />
+          <StatCard label="Avg Rating" value={stats?.averageRating || "0"} icon={<span className="text-lg">★</span>} iconBg="bg-yellow-50" />
+        </div>
+
+        {/* Status Filter */}
+        <div className="flex gap-2 items-center">
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v)}>
+            <SelectTrigger className="w-40"><SelectValue placeholder="All Status" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Reviews Table */}
+        <div className="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-neutral-50 border-b border-neutral-200">
+              <tr>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">User</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">Rating</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">Review</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">Status</th>
+                <th className="text-left px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">Date</th>
+                <th className="text-right px-6 py-3 text-xs font-semibold text-neutral-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-100">
+              {loading ? (
+                <tr><td colSpan={6} className="px-6 py-8 text-center text-neutral-500">Loading...</td></tr>
+              ) : reviews.length === 0 ? (
+                <tr><td colSpan={6} className="px-6 py-8 text-center text-neutral-500">No reviews found</td></tr>
+              ) : (
+                reviews.map((r) => {
+                  const badge = statusBadge[r.status] || statusBadge.pending;
+                  return (
+                    <tr key={r._id} className="hover:bg-neutral-50">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center shrink-0">
+                            <span className="text-sm font-bold text-primary-700">{r.name?.charAt(0)}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-neutral-900">{r.name}</p>
+                            <p className="text-xs text-neutral-500">{r.role}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: r.rating }).map((_, i) => <span key={i} className="text-yellow-400 text-sm">⭐</span>)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4"><p className="text-sm text-neutral-600 line-clamp-2 max-w-xs">&ldquo;{r.content}&rdquo;</p></td>
+                      <td className="px-6 py-4"><Badge variant={badge.variant} size="sm" dot>{badge.label}</Badge></td>
+                      <td className="px-6 py-4 text-sm text-neutral-500">{formatDate(r.createdAt)}</td>
+                      <td className="px-6 py-4 text-right">
+                        {r.status === "pending" && (
+                          <>
+                            <Button variant="ghost" size="sm" className="text-green-600" onClick={() => handleApprove(r._id)}>Approve</Button>
+                            <Button variant="ghost" size="sm" className="text-red-600" onClick={() => { setSelectedReview(r); setIsReviewOpen(true); }}>Reject</Button>
+                          </>
+                        )}
+                        <Button variant="ghost" size="sm" className="text-error-600" onClick={() => { setSelectedForDelete(r); setIsDeleteOpen(true); }}>Delete</Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
 
         {isLoading ? (
@@ -149,6 +291,17 @@ function AdminTestimonialsContent() {
               </div>
             </div>
           )}
+        </Modal>
+
+        {/* Reject Modal */}
+        <Modal isOpen={isReviewOpen} onClose={() => { setIsReviewOpen(false); setSelectedReview(null); setRejectReason(""); }} title="Reject Review" size="sm">
+          <div className="space-y-4">
+            <Textarea label="Reason" placeholder="Why is this being rejected?" value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => { setIsReviewOpen(false); setSelectedReview(null); setRejectReason(""); }}>Cancel</Button>
+              <Button variant="danger" onClick={handleReject}>Reject</Button>
+            </div>
+          </div>
         </Modal>
       </div>
     </DashboardLayout>

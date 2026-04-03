@@ -102,14 +102,49 @@ class CollegeService {
   }
 
   async getCollegeStats() {
-    const [total, government, privateCount, featured] = await Promise.all([
+    const [total, government, privateCount, featured, pending, verified, rejected] = await Promise.all([
       College.countDocuments({ isActive: true }),
       College.countDocuments({ type: "government", isActive: true }),
       College.countDocuments({ type: "private", isActive: true }),
       College.countDocuments({ featured: true, isActive: true }),
+      College.countDocuments({ verificationStatus: "pending", isActive: true }),
+      College.countDocuments({ verificationStatus: "verified", isActive: true }),
+      College.countDocuments({ verificationStatus: "rejected", isActive: true }),
     ]);
 
-    return { total, government, private: privateCount, featured };
+    return { total, government, private: privateCount, featured, pending, verified, rejected };
+  }
+
+  async verifyCollege(id: string, status: "verified" | "rejected", reason: string | undefined, adminId: string): Promise<ICollege> {
+    const updateData: any = {
+      verificationStatus: status,
+      verified: status === "verified",
+      verifiedBy: adminId,
+      verifiedAt: new Date(),
+    };
+    if (status === "rejected" && reason) {
+      updateData.rejectionReason = reason;
+    }
+
+    const college = await College.findByIdAndUpdate(id, updateData, { new: true });
+    if (!college) throw new AppError("College not found", 404);
+    return college;
+  }
+
+  async toggleActive(id: string): Promise<ICollege> {
+    const college = await this.getCollegeById(id);
+    const updated = await College.findByIdAndUpdate(
+      id,
+      { isActive: !college.isActive },
+      { new: true }
+    );
+    if (!updated) throw new AppError("College not found", 404);
+    return updated;
+  }
+
+  async getPendingVerification(): Promise<ICollege[]> {
+    return College.find({ verificationStatus: "pending", isActive: true })
+      .sort({ createdAt: -1 });
   }
 }
 
