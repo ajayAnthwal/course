@@ -17,6 +17,8 @@ import paymentRoutes from "./modules/payment/route/payment.route";
 import categoryRoutes from "./modules/category/route/category.route";
 import blogRoutes from "./modules/blog/route/blog.route";
 import testimonialRoutes from "./modules/testimonial/route/testimonial.route";
+import notificationRoutes from "./modules/notification/route/notification.route";
+import roleRoutes from "./modules/role/route/role.route";
 import College from "./modules/college/model/college.model";
 import Course from "./modules/course/model/course.model";
 import User from "./modules/user/model/user.model";
@@ -84,6 +86,8 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/testimonials", testimonialRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/roles", roleRoutes);
 
 // Site stats (calculated from DB)
 app.get("/api/stats", async (_req, res) => {
