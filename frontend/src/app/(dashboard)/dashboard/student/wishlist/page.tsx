@@ -12,7 +12,7 @@ const wishlist = [
   { id: "4", collegeName: "SRM Institute", city: "Chennai", course: "B.Tech CSE", fees: "₹3,80,000", rating: 4.1, logo: "🏛️" },
 ];
 
-export default function StudentWishlistPage() {
+function StudentWishlistPage() {
   const { user } = useAuth();
 
   return (
@@ -67,10 +67,12 @@ export default function StudentWishlistPage() {
   );
 }
 
-export default function WishlistPage() {
+function WishlistPage() {
   return (
     <ProtectedRoute allowedRoles={["student"]}>
       <StudentWishlistPage />
     </ProtectedRoute>
   );
 }
+
+export default WishlistPage;

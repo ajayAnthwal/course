@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useNews } from "@/features/news/hooks/useNews";
 import { useCategories } from "@/features/categories/hooks/useCategories";
@@ -156,7 +156,17 @@ function AdminNewsContent() {
               <textarea className="w-full h-40 px-4 py-3 border border-neutral-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} placeholder="Article content..." />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <Select label="Category *" options={categoryOptions} value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} placeholder="Select category" />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Category *</label>
+                <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Input label="Author" value={formData.author} onChange={(e) => setFormData({ ...formData, author: e.target.value })} />
             </div>
             <label className="flex items-center gap-2 text-sm text-neutral-700 cursor-pointer">

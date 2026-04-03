@@ -13,6 +13,10 @@ import {
   Spinner,
   Modal,
   Textarea,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui";
 import { useLeads, useUpdateLead } from "@/features/leads";
 import { formatDate } from "@/lib/utils";
@@ -114,14 +118,14 @@ function CollegeLeadsContent() {
                 />
               </div>
               <div className="w-full sm:w-48">
-                <Select
-                  options={statusOptions}
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                    setPage(1);
-                  }}
-                />
+                <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setPage(1); }}>
+                  <SelectTrigger><SelectValue placeholder="All Status" /></SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
@@ -272,12 +276,17 @@ function CollegeLeadsContent() {
             {/* Update Fields */}
             <div className="border-t border-neutral-100 pt-6 space-y-4">
               <h3 className="text-sm font-semibold text-neutral-900">Update Status</h3>
-              <Select
-                label="Status"
-                options={statusOptions.filter((o) => o.value !== "")}
-                value={editStatus}
-                onChange={(e) => setEditStatus(e.target.value as LeadStatus)}
-              />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
+                <Select value={editStatus} onValueChange={(value) => setEditStatus(value as LeadStatus)}>
+                  <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.filter((o) => o.value !== "").map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Textarea
                 label="Internal Notes"
                 placeholder="Add notes about this lead..."

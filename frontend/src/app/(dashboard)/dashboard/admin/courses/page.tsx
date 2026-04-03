@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useCourses, useCreateCourse, useUpdateCourse, useDeleteCourse } from "@/features/courses/hooks/useCourses";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { formatDate } from "@/lib/utils";
 import type { Course } from "@/types";
+
 
 function formatFees(amount: number) {
   if (!amount) return "—";
@@ -210,8 +211,28 @@ function AdminCoursesContent() {
               <textarea className="w-full h-24 px-4 py-3 border border-neutral-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Course description..." />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <Select label="Category *" options={categoryOptions} value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} placeholder="Select category" />
-              <Select label="Level" options={levelOptions} value={formData.level} onChange={(e) => setFormData({ ...formData, level: e.target.value })} />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Category *</label>
+                <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Level</label>
+                <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                  <SelectContent>
+                    {levelOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <Input label="Duration" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: e.target.value })} placeholder="e.g. 4 Years" />

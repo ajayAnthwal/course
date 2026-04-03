@@ -12,7 +12,7 @@ const applications = [
   { id: "4", collegeName: "BITS Pilani", collegeLogo: "🎓", course: "B.Tech ECE", status: "rejected", appliedDate: "2024-02-20", fees: "₹4,00,000", round: 3 },
 ];
 
-export default function StudentApplicationsPage() {
+function StudentApplicationsPage() {
   const { user } = useAuth();
 
   const getStatusBadge = (status: string) => {
@@ -82,10 +82,12 @@ export default function StudentApplicationsPage() {
   );
 }
 
-export default function ApplicationsPage() {
+function ApplicationsPage() {
   return (
     <ProtectedRoute allowedRoles={["student"]}>
       <StudentApplicationsPage />
     </ProtectedRoute>
   );
 }
+
+export default ApplicationsPage;

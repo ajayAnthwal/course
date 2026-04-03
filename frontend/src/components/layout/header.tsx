@@ -11,8 +11,8 @@ const navLinks = [
   { href: "/colleges", label: "Colleges", description: "Find the best institutions" },
   { href: "/courses", label: "Courses", description: "Explore programs" },
   { href: "/exams", label: "Exams", description: "Entrance exams guide" },
-  { href: "/news", label: "News", description: "Latest updates" },
-  { href: "/blogs", label: "Blog", description: "Insights and guides" },
+  { href: "/admission", label: "Admission", description: "Apply now" },
+  { href: "/reviews", label: "Reviews", description: "College ratings" },
 ];
 
 export function Header() {

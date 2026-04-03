@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from "@/features/categories/hooks/useCategories";
 import { formatDate } from "@/lib/utils";
@@ -156,7 +156,17 @@ function AdminCategoriesContent() {
           <div className="space-y-5">
             <Input label="Name *" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Engineering" />
             <Input label="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Short description" />
-            <Select label="Icon" options={iconOptions} value={formData.icon} onChange={(e) => setFormData({ ...formData, icon: e.target.value })} placeholder="Select an icon" />
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 mb-2">Icon</label>
+              <Select value={formData.icon} onValueChange={(value) => setFormData({ ...formData, icon: value })}>
+                <SelectTrigger><SelectValue placeholder="Select an icon" /></SelectTrigger>
+                <SelectContent>
+                  {iconOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="flex gap-4">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-neutral-700 mb-2">Color</label>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Select, Modal, DataTable, Button, useToast } from "@/components/ui";
+import { Badge, Select, Modal, DataTable, Button, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { useUsers, useUpdateUser, useDeleteUser } from "@/features/users";
 import { formatDate } from "@/lib/utils";
 import type { User, UserRole } from "@/types";
@@ -115,7 +115,14 @@ function AdminUsersContent() {
           searchValue={search}
           filters={
             <div className="w-full sm:w-44">
-              <Select options={roleOptions} value={roleFilter} onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }} />
+              <Select value={roleFilter} onValueChange={(value) => { setRoleFilter(value); setPage(1); }}>
+                <SelectTrigger><SelectValue placeholder="All Roles" /></SelectTrigger>
+                <SelectContent>
+                  {roleOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           }
           pagination={pagination}
@@ -147,12 +154,15 @@ function AdminUsersContent() {
             {selectedUser._id !== currentUser?._id && (
               <div className="flex justify-end gap-3 pt-2 border-t border-neutral-100">
                 <div className="flex-1">
-                  <Select
-                    label="Change Role"
-                    options={[{ label: "Admin", value: "admin" }, { label: "Student", value: "student" }, { label: "College", value: "college" }, { label: "Teacher", value: "teacher" }]}
-                    value={newRole || selectedUser.role}
-                    onChange={(e) => setNewRole(e.target.value)}
-                  />
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Change Role</label>
+                  <Select value={newRole || selectedUser.role} onValueChange={(value) => setNewRole(value)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {[{ label: "Admin", value: "admin" }, { label: "Student", value: "student" }, { label: "College", value: "college" }, { label: "Teacher", value: "teacher" }].map((option) => (
+                        <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 {newRole && newRole !== selectedUser.role && (
                   <Button className="self-end" onClick={() => updateUser.mutate({ id: selectedUser._id, data: { role: newRole } }, { onSuccess: () => { showToast("Role updated to " + newRole); setSelectedUser((prev) => prev ? { ...prev, role: newRole as UserRole } : null); setNewRole(""); } })} isLoading={updateUser.isPending}>

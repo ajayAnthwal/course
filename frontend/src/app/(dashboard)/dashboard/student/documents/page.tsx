@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
 import { DocumentManager } from "@/features/documents";
 
-export default function StudentDocumentsPage() {
+function StudentDocumentsPage() {
   const { user } = useAuth();
 
   return (
@@ -21,10 +21,12 @@ export default function StudentDocumentsPage() {
   );
 }
 
-export default function DocumentsPage() {
+function DocumentsPage() {
   return (
     <ProtectedRoute allowedRoles={["student"]}>
       <StudentDocumentsPage />
     </ProtectedRoute>
   );
 }
+
+export default DocumentsPage;

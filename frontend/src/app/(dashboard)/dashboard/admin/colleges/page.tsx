@@ -13,6 +13,10 @@ import {
   Spinner,
   Modal,
   Textarea,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui";
 import { useColleges, useCollegeStats, useCreateCollege, useUpdateCollege, useDeleteCollege } from "@/features/colleges";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -126,12 +130,17 @@ function CollegeForm({ college, onClose, onSuccess }: CollegeFormProps) {
             error={errors.description}
           />
         </div>
-        <Select
-          label="Type"
-          options={typeOptions.filter((o) => o.value !== "")}
-          value={form.type}
-          onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as any }))}
-        />
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-2">Type</label>
+          <Select value={form.type} onValueChange={(value) => setForm((f) => ({ ...f, type: value as any }))}>
+            <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+            <SelectContent>
+              {typeOptions.filter((o) => o.value !== "").map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <Input
           label="Established Year"
           type="number"
@@ -341,14 +350,14 @@ function AdminCollegesContent() {
                 />
               </div>
               <div className="w-full sm:w-48">
-                <Select
-                  options={typeOptions}
-                  value={typeFilter}
-                  onChange={(e) => {
-                    setTypeFilter(e.target.value);
-                    setPage(1);
-                  }}
-                />
+                <Select value={typeFilter} onValueChange={(value) => { setTypeFilter(value); setPage(1); }}>
+                  <SelectTrigger><SelectValue placeholder="All Types" /></SelectTrigger>
+                  <SelectContent>
+                    {typeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>

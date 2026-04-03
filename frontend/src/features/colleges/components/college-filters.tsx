@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Input, Select } from "@/components/ui";
+import { Button, Input, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import type { CollegeFilters } from "@/types";
 
@@ -179,39 +179,46 @@ export function CollegeFilters({ filters, onFilterChange }: CollegeFiltersProps)
       {/* Primary Filters Row */}
       <div className="flex flex-wrap gap-3 items-end bg-white rounded-xl border border-neutral-200 p-4">
         <div className="w-44">
-          <Select
-            options={typeOptions}
-            value={filters.type || ""}
-            onChange={(e) => handleFilterChange("type", e.target.value)}
-            placeholder="College Type"
-          />
+          <Select value={filters.type || ""} onValueChange={(value) => handleFilterChange("type", value)}>
+            <SelectTrigger><SelectValue placeholder="College Type" /></SelectTrigger>
+            <SelectContent>
+              {typeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="w-44">
-          <Select
-            options={stateOptions}
-            value={filters.state || ""}
-            onChange={(e) => handleFilterChange("state", e.target.value)}
-            placeholder="State"
-          />
+          <Select value={filters.state || ""} onValueChange={(value) => handleFilterChange("state", value)}>
+            <SelectTrigger><SelectValue placeholder="State" /></SelectTrigger>
+            <SelectContent>
+              {stateOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-
         <div className="w-44">
-          <Select
-            options={courseOptions}
-            value={filters.course || ""}
-            onChange={(e) => handleFilterChange("course", e.target.value)}
-            placeholder="Course"
-          />
+          <Select value={filters.course || ""} onValueChange={(value) => handleFilterChange("course", value)}>
+            <SelectTrigger><SelectValue placeholder="Course" /></SelectTrigger>
+            <SelectContent>
+              {courseOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="w-48">
-          <Select
-            options={sortOptions}
-            value={filters.sortBy ? `${filters.sortBy}_${filters.sortOrder}` : ""}
-            onChange={(e) => handleSortChange(e.target.value)}
-            placeholder="Sort By"
-          />
+          <Select value={filters.sortBy ? `${filters.sortBy}_${filters.sortOrder}` : ""} onValueChange={(value) => handleSortChange(value)}>
+            <SelectTrigger><SelectValue placeholder="Sort By" /></SelectTrigger>
+            <SelectContent>
+              {sortOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <label className="flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-600 cursor-pointer rounded-xl hover:bg-neutral-50 transition-colors">
@@ -264,15 +271,14 @@ export function CollegeFilters({ filters, onFilterChange }: CollegeFiltersProps)
           </div>
 
           <div className="w-48">
-            <Select
-              options={feesRanges.map((r) => ({ label: r.label, value: `${r.min}-${r.max}` }))}
-              value={activeFeesRange ? `${activeFeesRange.min}-${activeFeesRange.max}` : ""}
-              onChange={(e) => {
-                const [min, max] = e.target.value.split("-");
-                handleFeesRangeChange(min, max);
-              }}
-              placeholder="Fees Range"
-            />
+            <Select value={activeFeesRange ? `${activeFeesRange.min}-${activeFeesRange.max}` : ""} onValueChange={(value) => { const [min, max] = value.split("-"); handleFeesRangeChange(min, max); }}>
+              <SelectTrigger><SelectValue placeholder="Fees Range" /></SelectTrigger>
+              <SelectContent>
+                {feesRanges.map((r) => (
+                  <SelectItem key={`${r.min}-${r.max}`} value={`${r.min}-${r.max}`}>{r.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-center gap-2">

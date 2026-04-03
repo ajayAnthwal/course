@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Select, Modal, Textarea, DataTable, Button, StatCard } from "@/components/ui";
+import { Badge, Select, Modal, Textarea, DataTable, Button, StatCard, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { useLeads, useLeadStats, useUpdateLead } from "@/features/leads";
 import { formatDate } from "@/lib/utils";
 import type { Lead, LeadStatus } from "@/types";
@@ -146,11 +146,14 @@ function AdminLeadsContent() {
           searchValue={search}
           filters={
             <div className="w-full sm:w-44">
-              <Select
-                options={statusOptions}
-                value={statusFilter}
-                onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-              />
+              <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setPage(1); }}>
+                <SelectTrigger><SelectValue placeholder="All Status" /></SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           }
           pagination={pagination}
@@ -179,7 +182,17 @@ function AdminLeadsContent() {
             )}
             <div className="border-t border-neutral-100 pt-6 space-y-4">
               <h3 className="text-sm font-semibold text-neutral-900">Update Lead</h3>
-              <Select label="Status" options={statusOptions.filter((o) => o.value !== "")} value={editStatus} onChange={(e) => setEditStatus(e.target.value as LeadStatus)} />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
+                <Select value={editStatus} onValueChange={(value) => setEditStatus(value as LeadStatus)}>
+                  <SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.filter((o) => o.value !== "").map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Textarea label="Notes" placeholder="Add internal notes..." value={editNotes} onChange={(e) => setEditNotes(e.target.value)} />
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsDetailOpen(false)}>Cancel</Button>

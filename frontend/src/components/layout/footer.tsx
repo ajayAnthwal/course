@@ -3,16 +3,16 @@ import Link from "next/link";
 const footerLinks = {
   explore: [
     { label: "Top Colleges", href: "/colleges?featured=true" },
-    { label: "Engineering Colleges", href: "/colleges?type=government" },
-    { label: "Management Colleges", href: "/colleges?type=private" },
-    { label: "Medical Colleges", href: "/colleges" },
-    { label: "Universities", href: "/colleges" },
+    { label: "Colleges by City", href: "/cities" },
+    { label: "Government Colleges", href: "/colleges?type=government" },
+    { label: "Private Colleges", href: "/colleges?type=private" },
+    { label: "Compare Colleges", href: "/compare" },
   ],
   courses: [
     { label: "B.Tech", href: "/courses" },
     { label: "MBA", href: "/courses" },
     { label: "MBBS", href: "/courses" },
-    { label: "B.Com", href: "/courses" },
+    { label: "BBA", href: "/courses" },
     { label: "BCA", href: "/courses" },
   ],
   exams: [
@@ -23,15 +23,15 @@ const footerLinks = {
     { label: "CUET", href: "/exams" },
   ],
   company: [
-    { label: "About Us", href: "#" },
+    { label: "About Us", href: "/about" },
+    { label: "Contact Us", href: "/contact" },
     { label: "Careers", href: "#" },
     { label: "Blog", href: "/news" },
-    { label: "Contact", href: "#" },
-    { label: "Press", href: "#" },
+    { label: "FAQ", href: "/faq" },
   ],
   legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
     { label: "Cookie Policy", href: "#" },
     { label: "Disclaimer", href: "#" },
   ],

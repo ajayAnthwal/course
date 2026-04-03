@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useTestimonials, useCreateTestimonial, useDeleteTestimonial } from "@/features/testimonials/hooks/useTestimonials";
 import { formatDate } from "@/lib/utils";
@@ -119,7 +119,17 @@ function AdminTestimonialsContent() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Input label="College (optional)" value={formData.college} onChange={(e) => setFormData({ ...formData, college: e.target.value })} placeholder="e.g. IIT Delhi" />
-              <Select label="Rating" options={ratingOptions} value={formData.rating} onChange={(e) => setFormData({ ...formData, rating: e.target.value })} />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Rating</label>
+                <Select value={formData.rating} onValueChange={(value) => setFormData({ ...formData, rating: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select rating" /></SelectTrigger>
+                  <SelectContent>
+                    {ratingOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <FileUpload label="Avatar (optional)" onChange={setAvatarFile} />
             <div className="flex justify-end gap-3 pt-2">

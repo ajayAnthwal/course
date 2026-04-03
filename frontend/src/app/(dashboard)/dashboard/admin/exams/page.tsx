@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Badge, Modal, Button, Input, Select, useToast } from "@/components/ui";
+import { Badge, Modal, Button, Input, Select, useToast, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
 import { useExams } from "@/features/exams/hooks/useExams";
 import { formatDate } from "@/lib/utils";
 import apiClient from "@/services/axios";
@@ -141,11 +141,31 @@ function AdminExamsContent() {
             <Input label="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Brief description" />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} placeholder="e.g. Engineering" />
-              <Select label="Level" options={[{ label: "National", value: "national" }, { label: "State", value: "state" }, { label: "University", value: "university" }]} value={formData.level} onChange={(e) => setFormData({ ...formData, level: e.target.value })} />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Level</label>
+                <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="national">National</SelectItem>
+                    <SelectItem value="state">State</SelectItem>
+                    <SelectItem value="university">University</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Conducting Body" value={formData.conductingBody} onChange={(e) => setFormData({ ...formData, conductingBody: e.target.value })} placeholder="e.g. NTA" />
-              <Select label="Mode" options={[{ label: "Computer-Based", value: "computer-based" }, { label: "Pen & Paper", value: "pen-paper" }, { label: "Both", value: "both" }]} value={formData.mode} onChange={(e) => setFormData({ ...formData, mode: e.target.value })} />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Mode</label>
+                <Select value={formData.mode} onValueChange={(value) => setFormData({ ...formData, mode: value })}>
+                  <SelectTrigger><SelectValue placeholder="Select mode" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="computer-based">Computer-Based</SelectItem>
+                    <SelectItem value="pen-paper">Pen & Paper</SelectItem>
+                    <SelectItem value="both">Both</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <Input label="Frequency" value={formData.frequency} onChange={(e) => setFormData({ ...formData, frequency: e.target.value })} placeholder="e.g. Once a year" />

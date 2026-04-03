@@ -12,6 +12,10 @@ import {
   Spinner,
   Modal,
   Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui";
 import { useLeads } from "@/features/leads";
 import { formatDate } from "@/lib/utils";
@@ -93,14 +97,14 @@ function StudentEnquiriesContent() {
             <div className="flex items-center gap-3">
               <span className="text-sm text-neutral-500">Filter:</span>
               <div className="w-48">
-                <Select
-                  options={statusOptions}
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                    setPage(1);
-                  }}
-                />
+                <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setPage(1); }}>
+                  <SelectTrigger><SelectValue placeholder="All Status" /></SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
