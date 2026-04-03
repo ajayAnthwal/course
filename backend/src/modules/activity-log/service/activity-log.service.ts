@@ -124,6 +124,92 @@ class ActivityLogService {
       .limit(limit);
   }
 
+  async getUserActivityLogs(
+    userId: string,
+    query: {
+      page?: string;
+      limit?: string;
+      action?: string;
+      resource?: string;
+      startDate?: string;
+      endDate?: string;
+    }
+  ) {
+    const page = parseInt(query.page || "1", 10);
+    const limit = parseInt(query.limit || "20", 10);
+    const skip = (page - 1) * limit;
+
+    const filter: any = { user: new mongoose.Types.ObjectId(userId) };
+
+    if (query.action) filter.action = query.action;
+    if (query.resource) filter.resource = query.resource;
+
+    if (query.startDate || query.endDate) {
+      filter.createdAt = {};
+      if (query.startDate) filter.createdAt.$gte = new Date(query.startDate);
+      if (query.endDate) filter.createdAt.$lte = new Date(query.endDate);
+    }
+
+    const [logs, total] = await Promise.all([
+      ActivityLog.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      ActivityLog.countDocuments(filter),
+    ]);
+
+    return {
+      logs,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getUserActivityStats(userId: string) {
+    const filter = { user: new mongoose.Types.ObjectId(userId) };
+
+    const [totalActivities, todayActivities, weekActivities, monthActivities] = await Promise.all([
+      ActivityLog.countDocuments(filter),
+      ActivityLog.countDocuments({
+        ...filter,
+        createdAt: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+      }),
+      ActivityLog.countDocuments({
+        ...filter,
+        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+      }),
+      ActivityLog.countDocuments({
+        ...filter,
+        createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      }),
+    ]);
+
+    const actionBreakdown = await ActivityLog.aggregate([
+      { $match: filter },
+      { $group: { _id: "$action", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    const resourceBreakdown = await ActivityLog.aggregate([
+      { $match: filter },
+      { $group: { _id: "$resource", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+    ]);
+
+    return {
+      totalActivities,
+      todayActivities,
+      weekActivities,
+      monthActivities,
+      actionBreakdown: actionBreakdown.map((a) => ({ action: a._id, count: a.count })),
+      resourceBreakdown: resourceBreakdown.map((r) => ({ resource: r._id, count: r.count })),
+    };
+  }
+
   async clearOldLogs(days: number = 90): Promise<number> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);

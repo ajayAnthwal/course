@@ -24,6 +24,10 @@ import activityLogRoutes from "./modules/activity-log/route/activity-log.route";
 import documentRoutes from "./modules/document/route/document.route";
 import settingsRoutes from "./modules/settings/route/settings.route";
 import analyticsRoutes from "./modules/analytics/route/analytics.route";
+import wishlistRoutes from "./modules/wishlist/route/wishlist.route";
+import applicationRoutes from "./modules/application/route/application.route";
+import reviewRoutes from "./modules/review/route/review.route";
+import messageRoutes from "./modules/message/route/message.route";
 import College from "./modules/college/model/college.model";
 import Course from "./modules/course/model/course.model";
 import User from "./modules/user/model/user.model";
@@ -109,6 +113,10 @@ app.use("/api/activity-logs", activityLogRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/applications", applicationRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Site stats (calculated from DB)
 app.get("/api/stats", async (_req, res) => {

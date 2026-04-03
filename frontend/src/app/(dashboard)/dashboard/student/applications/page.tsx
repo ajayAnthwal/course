@@ -1,19 +1,28 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui";
+import { useApplications, useApplicationStats } from "@/features/applications/hooks/useApplications";
 import { formatDate } from "@/lib/utils";
-
-const applications = [
-  { id: "1", collegeName: "IIT Bombay", collegeLogo: "🏛️", course: "B.Tech CSE", status: "shortlisted", appliedDate: "2024-03-15", fees: "₹2,50,000", round: 2 },
-  { id: "2", collegeName: "IIM Ahmedabad", collegeLogo: "📊", course: "MBA", status: "under_review", appliedDate: "2024-03-10", fees: "₹25,00,000", round: 1 },
-  { id: "3", collegeName: "NIT Delhi", collegeLogo: "🏛️", course: "B.Tech ME", status: "applied", appliedDate: "2024-03-01", fees: "₹1,80,000", round: 1 },
-  { id: "4", collegeName: "BITS Pilani", collegeLogo: "🎓", course: "B.Tech ECE", status: "rejected", appliedDate: "2024-02-20", fees: "₹4,00,000", round: 3 },
-];
 
 function StudentApplicationsPage() {
   const { user } = useAuth();
+  const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const { data: statsData } = useApplicationStats();
+  const { data: applicationsData, isLoading } = useApplications({
+    page,
+    limit: 10,
+    status: statusFilter || undefined,
+  });
+
+  const applications = applicationsData?.data || [];
+  const pagination = applicationsData?.pagination;
+  const stats = statsData?.data;
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { label: string; variant: "success" | "warning" | "primary" | "danger" | "default" }> = {
@@ -21,60 +30,148 @@ function StudentApplicationsPage() {
       under_review: { label: "Under Review", variant: "primary" },
       shortlisted: { label: "Shortlisted", variant: "success" },
       rejected: { label: "Rejected", variant: "danger" },
-      admitted: { label: "Admitted", variant: "success" },
+      accepted: { label: "Accepted", variant: "success" },
+      paid: { label: "Fee Paid", variant: "secondary" },
+      enrolled: { label: "Enrolled", variant: "success" },
     };
-    return variants[status] || variants.applied;
+    return variants[status] || { label: status, variant: "default" as any };
   };
+
+  const statusCounts = [
+    { status: "", label: "All", count: stats?.total || 0 },
+    { status: "applied", label: "Applied", count: stats?.applied || 0 },
+    { status: "under_review", label: "Under Review", count: stats?.underReview || 0 },
+    { status: "shortlisted", label: "Shortlisted", count: stats?.shortlisted || 0 },
+    { status: "accepted", label: "Accepted", count: stats?.accepted || 0 },
+    { status: "rejected", label: "Rejected", count: stats?.rejected || 0 },
+  ];
 
   return (
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-neutral-900">My Applications</h1>
-          <p className="text-neutral-500">Track all your college applications</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-neutral-900">My Applications</h1>
+            <p className="text-neutral-500">Track all your college applications</p>
+          </div>
+          <Link href="/colleges">
+            <Button>Apply to College</Button>
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {["applied", "under_review", "shortlisted", "rejected", "admitted"].map((status) => {
-            const count = applications.filter(a => a.status === status).length;
-            return (
-              <Card key={status}>
-                <CardContent className="p-4 text-center">
-                  <p className="text-2xl font-bold">{count}</p>
-                  <p className="text-sm text-neutral-500 capitalize">{status.replace("_", " ")}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
+        {/* Status Tabs */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {statusCounts.map((item) => (
+            <Card 
+              key={item.status} 
+              hover 
+              className={`cursor-pointer ${statusFilter === item.status ? 'ring-2 ring-primary-500' : ''}`}
+              onClick={() => { setStatusFilter(item.status); setPage(1); }}
+            >
+              <CardContent className="p-4 text-center">
+                <p className="text-2xl font-bold">{item.count}</p>
+                <p className="text-sm text-neutral-500">{item.label}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
+        {/* Filter */}
+        <div className="flex items-center gap-4">
+          <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="applied">Applied</SelectItem>
+              <SelectItem value="under_review">Under Review</SelectItem>
+              <SelectItem value="shortlisted">Shortlisted</SelectItem>
+              <SelectItem value="accepted">Accepted</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Applications List */}
         <Card>
           <CardHeader>
-            <CardTitle>All Applications ({applications.length})</CardTitle>
+            <CardTitle>All Applications ({pagination?.total || 0})</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {applications.map((app) => {
-                const badge = getStatusBadge(app.status);
-                return (
-                  <div key={app.id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-xl">
-                    <div className="flex items-center gap-4">
-                      <span className="text-3xl">{app.collegeLogo}</span>
-                      <div>
-                        <p className="font-semibold text-neutral-900">{app.collegeName}</p>
-                        <p className="text-sm text-neutral-500">{app.course} • Round {app.round}</p>
-                        <p className="text-xs text-neutral-400 mt-1">Applied: {formatDate(app.appliedDate)}</p>
+            {isLoading ? (
+              <div className="text-center py-8 text-neutral-500">Loading...</div>
+            ) : applications.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-neutral-500 mb-4">No applications found</p>
+                <Link href="/colleges">
+                  <Button>Apply to College</Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {applications.map((app: any) => {
+                  const badge = getStatusBadge(app.status);
+                  return (
+                    <div 
+                      key={app._id} 
+                      className="flex items-center justify-between p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-neutral-100 rounded-xl flex items-center justify-center text-2xl">
+                          🏛️
+                        </div>
+                        <div>
+                          <p className="font-semibold text-neutral-900">{(app as any).college?.name}</p>
+                          <p className="text-sm text-neutral-500">{app.course}</p>
+                          <p className="text-xs text-neutral-400 mt-1">
+                            Applied: {formatDate(app.appliedAt)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right flex items-center gap-4">
+                        <div>
+                          <Badge variant={badge.variant} className="mb-2">{badge.label}</Badge>
+                          <p className="text-sm font-medium text-neutral-700">
+                            {app.paymentAmount ? `₹${app.paymentAmount.toLocaleString()}` : "—"}
+                          </p>
+                          <Link href={`/dashboard/student/applications/${app._id}`}>
+                            <Button variant="ghost" size="sm" className="mt-2">View Details</Button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <Badge variant={badge.variant} className="mb-2">{badge.label}</Badge>
-                      <p className="text-sm font-medium text-neutral-700">{app.fees}</p>
-                      <Button variant="ghost" size="sm" className="mt-2">View Details</Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-between pt-4 border-t">
+                <p className="text-sm text-neutral-500">
+                  Showing {applications.length} of {pagination.total}
+                </p>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                  >
+                    Previous
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    disabled={page >= pagination.totalPages}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

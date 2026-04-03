@@ -34,3 +34,28 @@ export const clearOldLogs = catchAsync(async (req: Request, res: Response, _next
     data: { deletedCount },
   });
 });
+
+export const getUserActivity = catchAsync(async (req: any, res: Response, _next: NextFunction) => {
+  const { page, limit, action, resource, startDate, endDate } = req.query;
+  const result = await activityLogService.getUserActivityLogs(
+    req.user?.id,
+    { page, limit, action, resource, startDate, endDate }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "User activity retrieved successfully",
+    data: result.logs,
+    pagination: result.pagination,
+  });
+});
+
+export const getUserActivityStats = catchAsync(async (req: any, res: Response, _next: NextFunction) => {
+  const stats = await activityLogService.getUserActivityStats(req.user?.id);
+
+  res.status(200).json({
+    success: true,
+    message: "User activity stats retrieved successfully",
+    data: stats,
+  });
+});
