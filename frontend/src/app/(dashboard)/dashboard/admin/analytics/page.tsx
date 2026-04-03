@@ -128,10 +128,10 @@ export default function AnalyticsPage() {
           )}
           {reportType === "colleges" && (
             <>
-              <StatCard label="Total Colleges" value={collegeStats?.total || 0} change="+5%" changeType="positive" icon={<span className="text-lg">🏛️</span>} iconBg="bg-secondary-50" />
-              <StatCard label="Government" value={collegeStats?.government || 0} icon={<span className="text-lg">🏢</span>} iconBg="bg-blue-50" />
-              <StatCard label="Private" value={collegeStats?.private || 0} icon={<span className="text-lg">🏫</span>} iconBg="bg-purple-50" />
-              <StatCard label="Featured" value={collegeStats?.featured || 0} icon={<span className="text-lg">⭐</span>} iconBg="bg-amber-50" />
+              <StatCard label="Total Colleges" value={(collegeStats as any)?.total || 0} change="+5%" changeType="positive" icon={<span className="text-lg">🏛️</span>} iconBg="bg-secondary-50" />
+              <StatCard label="Government" value={(collegeStats as any)?.government || 0} icon={<span className="text-lg">🏢</span>} iconBg="bg-blue-50" />
+              <StatCard label="Private" value={(collegeStats as any)?.private || 0} icon={<span className="text-lg">🏫</span>} iconBg="bg-purple-50" />
+              <StatCard label="Featured" value={(collegeStats as any)?.featured || 0} icon={<span className="text-lg">⭐</span>} iconBg="bg-amber-50" />
             </>
           )}
           {reportType === "users" && (

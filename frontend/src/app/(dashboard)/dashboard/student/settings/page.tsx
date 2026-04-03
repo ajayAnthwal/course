@@ -14,17 +14,45 @@ function StudentSettingsPage() {
   const updateUser = useUpdateUser();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        phone: user.phone || "",
+        dateOfBirth: (user as any).dateOfBirth || "",
+        address: (user as any).address || "",
+        city: (user as any).city || "",
+        state: (user as any).state || "",
+        pincode: (user as any).pincode || "",
+        preferredCourse: (user as any).preferredCourse || "",
+        preferredCity: (user as any).preferredCity || "",
+      });
+    }
+    setIsLoading(false);
+  }, [user]);
+
+  if (isLoading || !user) {
+    return (
+      <DashboardLayout role="student" userName={user?.name}>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-[var(--color-text-muted)]">Loading settings...</div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   const [form, setForm] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
-    dateOfBirth: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    preferredCourse: "",
-    preferredCity: "",
+    dateOfBirth: (user as any)?.dateOfBirth || "",
+    address: (user as any)?.address || "",
+    city: (user as any)?.city || "",
+    state: (user as any)?.state || "",
+    pincode: (user as any)?.pincode || "",
+    preferredCourse: (user as any)?.preferredCourse || "",
+    preferredCity: (user as any)?.preferredCity || "",
   });
 
   const [passwords, setPasswords] = useState({
@@ -49,25 +77,13 @@ function StudentSettingsPage() {
     allowMessages: true,
   });
 
-  useEffect(() => {
-    if (user) {
-      setForm({
-        name: user.name || "",
-        phone: user.phone || "",
-        dateOfBirth: (user as any).dateOfBirth || "",
-        address: (user as any).address || "",
-        city: (user as any).city || "",
-        state: (user as any).state || "",
-        pincode: (user as any).pincode || "",
-        preferredCourse: (user as any).preferredCourse || "",
-        preferredCity: (user as any).preferredCity || "",
-      });
-    }
-  }, [user]);
-
   const handleSaveProfile = () => {
+    if (!user?._id) {
+      showToast("Please wait for user data to load", "error");
+      return;
+    }
     updateUser.mutate(
-      { id: user!._id, data: form },
+      { id: user._id, data: form },
       {
         onSuccess: () => {
           showToast("Profile updated", "success");
@@ -83,8 +99,8 @@ function StudentSettingsPage() {
       showToast("Passwords don't match", "error");
       return;
     }
-    if (passwords.new.length < 6) {
-      showToast("Password must be at least 6 characters", "error");
+    if (passwords.new.length < 8) {
+      showToast("Password must be at least 8 characters", "error");
       return;
     }
 
@@ -92,11 +108,12 @@ function StudentSettingsPage() {
       await apiClient.post("/auth/change-password", {
         currentPassword: passwords.current,
         newPassword: passwords.new,
+        confirmNewPassword: passwords.confirm,
       });
       showToast("Password changed successfully", "success");
       setPasswords({ current: "", new: "", confirm: "" });
-    } catch (error) {
-      showToast("Failed to change password", "error");
+    } catch (error: any) {
+      showToast(error?.response?.data?.message || "Failed to change password", "error");
     }
   };
 
@@ -129,20 +146,20 @@ function StudentSettingsPage() {
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Settings</h1>
-          <p className="text-neutral-500">Manage your account preferences</p>
+          <h1 className="text-2xl font-bold text-[var(--color-text)]">Settings</h1>
+          <p className="text-[var(--color-text-muted)]">Manage your account preferences</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-neutral-200">
+        <div className="flex gap-2 border-b border-[var(--color-border-subtle)]">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-neutral-500 hover:text-neutral-700"
+                  ? "text-[var(--color-primary-600)] border-b-2 border-[var(--color-primary-600)]"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
               }`}
             >
               {tab.label}
@@ -156,15 +173,15 @@ function StudentSettingsPage() {
             <div className="lg:col-span-1">
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="w-24 h-24 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl font-bold text-primary-700">
+                  <div className="w-24 h-24 rounded-full bg-[var(--color-primary-100)] flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl font-bold text-[var(--color-primary-700)]">
                       {user?.name?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <h2 className="text-lg font-semibold">{user?.name}</h2>
-                  <p className="text-sm text-neutral-500">{user?.email}</p>
+                  <p className="text-sm text-[var(--color-text-muted)]">{user?.email}</p>
                   <Badge variant="primary" className="mt-2">Student</Badge>
-                  <p className="text-xs text-neutral-400 mt-4">
+                  <p className="text-xs text-[var(--color-text-muted)] mt-4">
                     Member since {user?.createdAt ? formatDate(user.createdAt) : "N/A"}
                   </p>
                 </CardContent>
@@ -237,19 +254,19 @@ function StudentSettingsPage() {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-neutral-500 uppercase">Name</p>
+                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Name</p>
                         <p className="font-medium">{user?.name}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-neutral-500 uppercase">Email</p>
+                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Email</p>
                         <p className="font-medium">{user?.email}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-neutral-500 uppercase">Phone</p>
+                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Phone</p>
                         <p className="font-medium">{user?.phone || "Not provided"}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-neutral-500 uppercase">Preferred Course</p>
+                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Preferred Course</p>
                         <p className="font-medium">{form.preferredCourse || "Not set"}</p>
                       </div>
                     </div>
@@ -307,7 +324,7 @@ function StudentSettingsPage() {
                   { key: "newColleges", label: "New College Alerts" },
                   { key: "promotions", label: "Promotions & Offers" },
                 ].map((item) => (
-                  <div key={item.key} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                  <div key={item.key} className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
                     <span className="font-medium">{item.label}</span>
                     <Switch
                       checked={notifications[item.key as keyof typeof notifications]}
@@ -331,30 +348,30 @@ function StudentSettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
                   <div>
                     <p className="font-medium">Profile Visibility</p>
-                    <p className="text-sm text-neutral-500">Allow others to see your profile</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Allow others to see your profile</p>
                   </div>
                   <Switch
                     checked={privacy.profileVisible}
                     onCheckedChange={(checked) => setPrivacy({ ...privacy, profileVisible: checked })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
                   <div>
                     <p className="font-medium">Show Activity</p>
-                    <p className="text-sm text-neutral-500">Display your application activity</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Display your application activity</p>
                   </div>
                   <Switch
                     checked={privacy.showActivity}
                     onCheckedChange={(checked) => setPrivacy({ ...privacy, showActivity: checked })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
                   <div>
                     <p className="font-medium">Allow Messages</p>
-                    <p className="text-sm text-neutral-500">Receive messages from colleges</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Receive messages from colleges</p>
                   </div>
                   <Switch
                     checked={privacy.allowMessages}

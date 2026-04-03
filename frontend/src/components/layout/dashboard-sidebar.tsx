@@ -94,20 +94,20 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-white border-r border-neutral-200 transition-transform duration-300 lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-64 flex flex-col bg-white border-r border-gray-200 transition-transform duration-300 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between px-6 h-16 border-b border-neutral-200 shrink-0">
+        <div className="flex items-center justify-between px-6 h-16 border-b border-gray-200 shrink-0">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-primary-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xs">EP</span>
             </div>
-            <span className="text-base font-bold text-neutral-900">EduPortal</span>
+            <span className="text-base font-bold text-gray-900">EduPortal</span>
           </Link>
           <button
-            className="lg:hidden p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100"
+            className="lg:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100"
             onClick={onClose}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -117,7 +117,7 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
         </div>
 
         {/* User Info */}
-        <div className="px-4 py-4 border-b border-neutral-100 shrink-0">
+        <div className="px-4 py-4 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-3 px-2">
             <div className="w-9 h-9 rounded-lg bg-primary-100 flex items-center justify-center">
               <span className="text-sm font-semibold text-primary-700">
@@ -125,15 +125,15 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
               </span>
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-neutral-900 truncate">{userName}</p>
-              <p className="text-xs text-neutral-500 capitalize">{role} Account</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{userName}</p>
+              <p className="text-xs text-gray-500 capitalize">{role} Account</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <p className="px-3 text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-2">
+          <p className="px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
             Menu
           </p>
           {items.map((item) => {
@@ -147,7 +147,7 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
                   "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
                   isActive
                     ? "bg-primary-50 text-primary-700 shadow-sm"
-                    : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 )}
               >
                 <span className="text-base">{item.icon}</span>
@@ -158,10 +158,10 @@ export function DashboardSidebar({ role, userName, isOpen, onClose }: DashboardS
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-neutral-100 shrink-0">
+        <div className="p-4 border-t border-gray-100 shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2 px-3 py-2.5 text-sm text-neutral-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+            className="flex items-center gap-2 px-3 py-2.5 text-sm text-gray-500 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

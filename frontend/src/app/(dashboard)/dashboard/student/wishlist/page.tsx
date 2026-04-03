@@ -33,22 +33,22 @@ function StudentWishlistPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">My Wishlist</h1>
-            <p className="text-neutral-500">Colleges you've saved for comparison</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">My Wishlist</h1>
+            <p className="text-[var(--color-text-muted)]">Colleges you've saved for comparison</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-neutral-900">{stats?.total || 0}</p>
-            <p className="text-sm text-neutral-500">Saved Colleges</p>
+            <p className="text-2xl font-bold text-[var(--color-text)]">{stats?.total || 0}</p>
+            <p className="text-sm text-[var(--color-text-muted)]">Saved Colleges</p>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8 text-neutral-500">Loading...</div>
+          <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
         ) : items.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
               <div className="text-4xl mb-4">❤️</div>
-              <p className="text-neutral-500 mb-4">No colleges in your wishlist</p>
+              <p className="text-[var(--color-text-muted)] mb-4">No colleges in your wishlist</p>
               <Link href="/colleges">
                 <Button>Browse Colleges</Button>
               </Link>
@@ -71,11 +71,11 @@ function StudentWishlistPage() {
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-neutral-900 truncate">{item.college?.name}</h3>
-                  <p className="text-sm text-neutral-500">{item.college?.location?.city}, {item.college?.location?.state}</p>
+                  <h3 className="font-semibold text-[var(--color-text)] truncate">{item.college?.name}</h3>
+                  <p className="text-sm text-[var(--color-text-muted)]">{item.college?.location?.city}, {item.college?.location?.state}</p>
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-sm font-medium text-yellow-500">⭐ {item.college?.rating || "N/A"}</span>
-                    <span className="text-sm text-neutral-500">{item.college?.type}</span>
+                    <span className="text-sm text-[var(--color-text-muted)]">{item.college?.type}</span>
                   </div>
                   <div className="flex gap-2 mt-4">
                     <Link href={`/colleges/${item.college?._id}`} className="flex-1">
@@ -108,7 +108,7 @@ function StudentWishlistPage() {
             >
               Previous
             </Button>
-            <span className="text-sm text-neutral-500">
+            <span className="text-sm text-[var(--color-text-muted)]">
               Page {page} of {pagination.totalPages}
             </span>
             <Button 
@@ -128,7 +128,7 @@ function StudentWishlistPage() {
           </CardHeader>
           <CardContent className="text-center py-8">
             <div className="text-4xl mb-4">⚖️</div>
-            <p className="text-neutral-500 mb-4">Select up to 4 colleges to compare side by side</p>
+            <p className="text-[var(--color-text-muted)] mb-4">Select up to 4 colleges to compare side by side</p>
             <Link href="/dashboard/student/compare">
               <Button>Go to Compare</Button>
             </Link>

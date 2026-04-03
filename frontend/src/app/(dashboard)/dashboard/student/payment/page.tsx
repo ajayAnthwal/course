@@ -49,10 +49,10 @@ function PaymentDashboardContent() {
         paymentService.getPlans(),
         paymentService.getMyOrders(),
       ]);
-      setPlans(plansRes.data?.data || []);
-      setOrders(ordersRes.data?.data || []);
+      setPlans(plansRes.data || []);
+      setOrders(ordersRes.data || []);
       
-      const completedOrder = ordersRes.data?.data?.find((o: Order) => o.status === "captured");
+      const completedOrder = ordersRes.data?.find((o: Order) => o.status === "captured");
       if (completedOrder) {
         setCurrentPlan(completedOrder.plan);
       }
@@ -118,8 +118,8 @@ function PaymentDashboardContent() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">Payments & Plans</h1>
-            <p className="text-neutral-500">Manage your subscriptions and payment history</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">Payments & Plans</h1>
+            <p className="text-[var(--color-text-muted)]">Manage your subscriptions and payment history</p>
           </div>
           <Button onClick={() => setShowUpgrade(true)}>Upgrade Plan</Button>
         </div>
@@ -134,8 +134,8 @@ function PaymentDashboardContent() {
                     <span className="text-lg">{stat.icon}</span>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">{stat.label}</p>
-                    <p className="text-xl font-bold text-neutral-900">{stat.value}</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
+                    <p className="text-xl font-bold text-[var(--color-text)]">{stat.value}</p>
                   </div>
                 </div>
               </CardContent>
@@ -145,17 +145,17 @@ function PaymentDashboardContent() {
 
         {/* Current Plan */}
         {currentPlan !== "free" && (
-          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
+          <Card className="bg-gradient-to-r from-indigo-50 to-indigo-100 border-indigo-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-primary-600 font-medium">Current Plan</p>
-                  <h2 className="text-2xl font-bold text-primary-900">{currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan</h2>
-                  <p className="text-primary-600 mt-1">Valid until {getValidUntil()}</p>
+                  <p className="text-sm text-indigo-600 font-medium">Current Plan</p>
+                  <h2 className="text-2xl font-bold text-indigo-900">{currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1)} Plan</h2>
+                  <p className="text-indigo-600 mt-1">Valid until {getValidUntil()}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-3xl font-bold text-primary-700">₹{plans.find(p => p.plan === currentPlan)?.amount || 0}</p>
-                  <p className="text-sm text-primary-500">/year</p>
+                  <p className="text-3xl font-bold text-indigo-700">₹{plans.find(p => p.plan === currentPlan)?.amount || 0}</p>
+                  <p className="text-sm text-indigo-500">/year</p>
                 </div>
               </div>
             </CardContent>
@@ -171,7 +171,7 @@ function PaymentDashboardContent() {
             {orders.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">💳</div>
-                <p className="text-neutral-500 mb-4">No payment history</p>
+                <p className="text-[var(--color-text-muted)] mb-4">No payment history</p>
                 <Button onClick={() => setShowUpgrade(true)}>Upgrade Plan</Button>
               </div>
             ) : (
@@ -179,7 +179,7 @@ function PaymentDashboardContent() {
                 {orders.map((order) => {
                   const badge = getStatusBadge(order.status);
                   return (
-                    <div key={order._id} className="flex items-center justify-between p-4 border border-neutral-200 rounded-xl">
+                    <div key={order._id} className="flex items-center justify-between p-4 border border-[var(--color-border)] rounded-xl">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                           order.status === "captured" ? "bg-green-100" : order.status === "pending" ? "bg-yellow-100" : "bg-red-100"
@@ -187,14 +187,14 @@ function PaymentDashboardContent() {
                           <span className="text-lg">{order.status === "captured" ? "✓" : order.status === "pending" ? "⏳" : "✕"}</span>
                         </div>
                         <div>
-                          <p className="font-medium text-neutral-900">{order.plan.charAt(0).toUpperCase() + order.plan.slice(1)} Plan</p>
-                          <p className="text-sm text-neutral-500">Order: {order.razorpayOrderId}</p>
-                          <p className="text-xs text-neutral-400">{formatDate(order.createdAt)}</p>
+                          <p className="font-medium text-[var(--color-text)]">{order.plan.charAt(0).toUpperCase() + order.plan.slice(1)} Plan</p>
+                          <p className="text-sm text-[var(--color-text-muted)]">Order: {order.razorpayOrderId}</p>
+                          <p className="text-xs text-[var(--color-text-muted)]">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-bold text-neutral-900">₹{order.amount}</p>
+                          <p className="font-bold text-[var(--color-text)]">₹{order.amount}</p>
                           <Badge variant={badge.variant} size="sm">{badge.label}</Badge>
                         </div>
                         {order.razorpayPaymentId && (
@@ -216,17 +216,17 @@ function PaymentDashboardContent() {
               <div
                 key={plan.plan}
                 className={`p-4 rounded-xl border-2 ${
-                  plan.plan === "premium" ? "border-primary-500 bg-primary-50" : "border-neutral-200"
+                  plan.plan === "premium" ? "border-primary-500 bg-[var(--color-primary-50)]" : "border-[var(--color-border)]"
                 }`}
               >
                 {plan.plan === "premium" && (
                   <Badge variant="primary" className="mb-2">Recommended</Badge>
                 )}
-                <h3 className="text-xl font-bold text-neutral-900">{plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)}</h3>
-                <p className="text-2xl font-bold text-primary-600 mt-2">₹{plan.amount}</p>
+                <h3 className="text-xl font-bold text-[var(--color-text)]">{plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)}</h3>
+                <p className="text-2xl font-bold text-indigo-600 mt-2">₹{plan.amount}</p>
                 <ul className="mt-4 space-y-2">
                   {getPlanFeatures(plan.plan).map((feature, idx) => (
-                    <li key={idx} className="text-sm text-neutral-600 flex items-center gap-2">
+                    <li key={idx} className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
                       <span>✓</span> {feature}
                     </li>
                   ))}

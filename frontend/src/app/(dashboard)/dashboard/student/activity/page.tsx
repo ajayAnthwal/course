@@ -72,12 +72,9 @@ function StudentActivityPage() {
       update: "bg-blue-100 text-blue-800",
       delete: "bg-red-100 text-red-800",
       login: "bg-purple-100 text-purple-800",
-      logout: "bg-gray-100 text-gray-800",
-      view: "bg-yellow-100 text-yellow-800",
-      apply: "bg-emerald-100 text-emerald-800",
-      wishlist: "bg-pink-100 text-pink-800",
+logout: "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]",
     };
-    const colorClass = actionColors[action.toLowerCase()] || "bg-gray-100 text-gray-800";
+    const colorClass = actionColors[action.toLowerCase()] || "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]";
     return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{action}</span>;
   };
 
@@ -98,8 +95,8 @@ function StudentActivityPage() {
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Activity</h1>
-          <p className="text-neutral-500">Track your recent activities</p>
+          <h1 className="text-2xl font-bold text-[var(--color-text)]">Activity</h1>
+          <p className="text-[var(--color-text-muted)]">Track your recent activities</p>
         </div>
 
         {/* Stats Cards */}
@@ -107,25 +104,24 @@ function StudentActivityPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-neutral-500">Total Activities</p>
+                <p className="text-sm text-[var(--color-text-muted)]">Total Activities</p>
                 <p className="text-2xl font-bold">{stats.totalActivities}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-neutral-500">Today</p>
+                <p className="text-sm text-[var(--color-text-muted)]">Today</p>
                 <p className="text-2xl font-bold">{stats.todayActivities}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-neutral-500">This Week</p>
-                <p className="text-2xl font-bold">{stats.weekActivities}</p>
+<p className="text-sm text-[var(--color-text-muted)]">This Week</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-neutral-500">This Month</p>
+                <p className="text-sm text-[var(--color-text-muted)]">This Month</p>
                 <p className="text-2xl font-bold">{stats.monthActivities}</p>
               </CardContent>
             </Card>
@@ -135,7 +131,7 @@ function StudentActivityPage() {
         {/* Filters */}
         <div className="flex gap-4">
           <select
-            className="px-3 py-2 border border-neutral-300 rounded-lg"
+            className="px-3 py-2 border border-[var(--color-border-strong)] rounded-lg"
             value={actionFilter}
             onChange={(e) => {
               setActionFilter(e.target.value);
@@ -151,7 +147,7 @@ function StudentActivityPage() {
             <option value="view">View</option>
           </select>
           <select
-            className="px-3 py-2 border border-neutral-300 rounded-lg"
+            className="px-3 py-2 border border-[var(--color-border-strong)] rounded-lg"
             value={resourceFilter}
             onChange={(e) => {
               setResourceFilter(e.target.value);
@@ -174,31 +170,31 @@ function StudentActivityPage() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-neutral-500">Loading...</div>
+              <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
             ) : activities.length === 0 ? (
-              <div className="text-center py-8 text-neutral-500">No activities found</div>
+              <div className="text-center py-8 text-[var(--color-text-muted)]">No activities found</div>
             ) : (
               <div className="space-y-3">
                 {activities.map((activity) => (
                   <div
                     key={activity._id}
-                    className="flex items-start gap-4 p-4 bg-neutral-50 rounded-lg"
+                    className="flex items-start gap-4 p-4 bg-[var(--color-bg-muted)] rounded-lg"
                   >
                     <span className="text-2xl">{getResourceIcon(activity.resource)}</span>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         {getActionBadge(activity.action)}
-                        <span className="text-sm text-neutral-500">{activity.resource}</span>
+                        <span className="text-sm text-[var(--color-text-muted)]">{activity.resource}</span>
                       </div>
-                      <p className="text-sm text-neutral-700">
+                      <p className="text-sm text-[var(--color-text-secondary)]">
                         {activity.action} {activity.resource}
                         {activity.details?.collegeName && ` - ${activity.details.collegeName}`}
                       </p>
-                      <p className="text-xs text-neutral-400 mt-1">
+                      <p className="text-xs text-[var(--color-text-muted)] mt-1">
                         {formatDate(activity.createdAt)}
                       </p>
                     </div>
-                    <Badge variant={activity.status === "success" ? "success" : "destructive"}>
+                    <Badge variant={activity.status === "success" ? "success" : "danger"}>
                       {activity.status}
                     </Badge>
                   </div>

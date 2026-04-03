@@ -32,6 +32,26 @@ export const createOrder = catchAsync(async (req: any, res: Response, _next: Nex
   });
 });
 
+export const createApplicationFeeOrder = catchAsync(async (req: any, res: Response, _next: NextFunction) => {
+  const { applicationId, amount } = req.body;
+  const order = await paymentService.createApplicationFeeOrder(
+    req.user.id,
+    applicationId,
+    amount
+  );
+
+  res.status(201).json({
+    success: true,
+    message: "Application fee order created successfully",
+    data: {
+      orderId: order._id,
+      razorpayOrderId: order.razorpayOrderId,
+      amount: order.amount,
+      currency: order.currency,
+    },
+  });
+});
+
 export const verifyPayment = catchAsync(async (req: any, res: Response, _next: NextFunction) => {
   const order = await paymentService.verifyPayment(
     req.body.razorpayOrderId,

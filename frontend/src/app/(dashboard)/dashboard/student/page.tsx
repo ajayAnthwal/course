@@ -21,7 +21,7 @@ const statusVariants: Record<string, { label: string; variant: "success" | "warn
 
 function StudentDashboardContent() {
   const { user } = useAuth();
-  
+
   const { data: collegeData } = useFeaturedColleges();
   const { data: applicationsData, isLoading: appsLoading } = useApplications({ limit: 5 });
   const { data: appStats } = useApplicationStats();
@@ -34,7 +34,7 @@ function StudentDashboardContent() {
   const documents = documentsData?.data || [];
 
   const statCards = [
-    { label: "Applications", value: stats?.total || 0, icon: "📝", color: "bg-primary-50" },
+    { label: "Applications", value: stats?.total || 0, icon: "📝", color: "bg-indigo-50" },
     { label: "Shortlisted", value: stats?.shortlisted || 0, icon: "✅", color: "bg-green-50" },
     { label: "Wishlist", value: wishlist?.total || 0, icon: "❤️", color: "bg-red-50" },
     { label: "Documents", value: documents.length || 0, icon: "📄", color: "bg-blue-50" },
@@ -45,8 +45,8 @@ function StudentDashboardContent() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">Student Dashboard</h1>
-            <p className="text-neutral-500">Welcome back, {user?.name}</p>
+            <h1 className="text-2xl font-bold">Student Dashboard</h1>
+            <p className="text-sm">Welcome back, {user?.name}</p>
           </div>
           <Link href="/colleges">
             <Button>Browse Colleges</Button>
@@ -63,8 +63,8 @@ function StudentDashboardContent() {
                     <span className="text-lg">{stat.icon}</span>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">{stat.label}</p>
-                    <p className="text-xl font-bold text-neutral-900">{stat.value}</p>
+                    <p className="text-xs">{stat.label}</p>
+                    <p className="text-xl font-bold">{stat.value}</p>
                   </div>
                 </div>
               </CardContent>
@@ -78,7 +78,7 @@ function StudentDashboardContent() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Recent Applications</CardTitle>
-              <Link href="/dashboard/student/applications" className="text-sm text-primary-600">
+              <Link href="/dashboard/student/applications" className="text-sm text-indigo-600 font-medium">
                 View all →
               </Link>
             </CardHeader>
@@ -86,7 +86,7 @@ function StudentDashboardContent() {
               <div className="space-y-3">
                 {applications.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-neutral-500">No applications yet</p>
+                    <p className="text-[var(--color-text-muted)]">No applications yet</p>
                     <Link href="/colleges">
                       <Button variant="outline" size="sm" className="mt-2">Apply Now</Button>
                     </Link>
@@ -98,13 +98,13 @@ function StudentDashboardContent() {
                       <Link
                         key={app._id}
                         href={`/dashboard/student/applications/${app._id}`}
-                        className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100"
+                        className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg hover:bg-[var(--color-border-subtle)]"
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-2xl">🏛️</span>
                           <div>
-                            <p className="font-medium text-neutral-900">{(app as any).college?.name}</p>
-                            <p className="text-sm text-neutral-500">{app.course}</p>
+                    <p className="font-medium">{(app as any).college?.name}</p>
+                            <p className="text-sm">{app.course}</p>
                           </div>
                         </div>
                         <Badge variant={status.variant} size="sm">{status.label}</Badge>
@@ -120,7 +120,7 @@ function StudentDashboardContent() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Recommended Colleges</CardTitle>
-              <Link href="/colleges" className="text-sm text-primary-600">
+              <Link href="/colleges" className="text-sm text-indigo-600">
                 View all →
               </Link>
             </CardHeader>
@@ -130,11 +130,11 @@ function StudentDashboardContent() {
                   <Link
                     key={college._id}
                     href={`/colleges/${college._id}`}
-                    className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100"
+                    className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg hover:bg-[var(--color-border-subtle)]"
                   >
                     <div>
-                      <p className="font-medium text-neutral-900">{college.name}</p>
-                      <p className="text-sm text-neutral-500">
+                      <p className="font-medium">{college.name}</p>
+                      <p className="text-sm">
                         {college.location?.city}, {college.location?.state}
                       </p>
                     </div>
@@ -160,10 +160,10 @@ function StudentDashboardContent() {
             <Link
               key={item.label}
               href={item.href}
-              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all"
+              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-[var(--color-border)] hover:border-[var(--color-border-strong)] hover:shadow-sm transition-all"
             >
               <span className="text-2xl">{item.icon}</span>
-              <span className="text-sm font-medium text-neutral-700">{item.label}</span>
+              <span className="text-sm font-medium">{item.label}</span>
             </Link>
           ))}
         </div>

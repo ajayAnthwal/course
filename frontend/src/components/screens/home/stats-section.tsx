@@ -22,7 +22,7 @@ export default function StatsSection({ siteStats }: StatsSectionProps) {
     <>
       <section className="py-8 bg-white border-b border-neutral-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-40">
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
             {["NIRF", "NAAC", "AICTE", "UGC", "NBA"].map((org) => (
               <span key={org} className="text-xl font-bold text-neutral-900 tracking-wider">{org}</span>
             ))}

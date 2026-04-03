@@ -13,6 +13,33 @@ export interface IUser extends Document {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  educationDetails: {
+    school?: string;
+    schoolBoard?: string;
+    schoolYear?: string;
+    schoolMarks?: string;
+    college?: string;
+    collegeBoard?: string;
+    collegeYear?: string;
+    collegeMarks?: string;
+    degree?: string;
+    university?: string;
+    graduationYear?: string;
+    graduationMarks?: string;
+  };
+  preferredCourse?: string;
+  preferredCity?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  notificationPreferences: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -53,6 +80,33 @@ const userSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    educationDetails: {
+      school: String,
+      schoolBoard: String,
+      schoolYear: String,
+      schoolMarks: String,
+      college: String,
+      collegeBoard: String,
+      collegeYear: String,
+      collegeMarks: String,
+      degree: String,
+      university: String,
+      graduationYear: String,
+      graduationMarks: String,
+    },
+    preferredCourse: String,
+    preferredCity: String,
+    dateOfBirth: String,
+    gender: String,
+    address: String,
+    city: String,
+    state: String,
+    pincode: String,
+    notificationPreferences: {
+      email: { type: Boolean, default: true },
+      sms: { type: Boolean, default: true },
+      push: { type: Boolean, default: true },
     },
   },
   {

@@ -29,10 +29,10 @@ function StudentApplicationsPage() {
       applied: { label: "Applied", variant: "default" },
       under_review: { label: "Under Review", variant: "primary" },
       shortlisted: { label: "Shortlisted", variant: "success" },
-      rejected: { label: "Rejected", variant: "danger" },
-      accepted: { label: "Accepted", variant: "success" },
-      paid: { label: "Fee Paid", variant: "secondary" },
-      enrolled: { label: "Enrolled", variant: "success" },
+      rejected: { label: "Rejected", variant: "danger" as const },
+      accepted: { label: "Accepted", variant: "success" as const },
+      paid: { label: "Fee Paid", variant: "primary" as const },
+      enrolled: { label: "Enrolled", variant: "success" as const },
     };
     return variants[status] || { label: status, variant: "default" as any };
   };
@@ -51,8 +51,8 @@ function StudentApplicationsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">My Applications</h1>
-            <p className="text-neutral-500">Track all your college applications</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">My Applications</h1>
+            <p className="text-[var(--color-text-muted)]">Track all your college applications</p>
           </div>
           <Link href="/colleges">
             <Button>Apply to College</Button>
@@ -62,17 +62,18 @@ function StudentApplicationsPage() {
         {/* Status Tabs */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {statusCounts.map((item) => (
-            <Card 
-              key={item.status} 
-              hover 
+            <div 
+              key={item.status}
               className={`cursor-pointer ${statusFilter === item.status ? 'ring-2 ring-primary-500' : ''}`}
               onClick={() => { setStatusFilter(item.status); setPage(1); }}
             >
-              <CardContent className="p-4 text-center">
-                <p className="text-2xl font-bold">{item.count}</p>
-                <p className="text-sm text-neutral-500">{item.label}</p>
-              </CardContent>
-            </Card>
+              <Card hover>
+                <CardContent className="p-4 text-center">
+                  <p className="text-2xl font-bold">{item.count}</p>
+                  <p className="text-sm text-[var(--color-text-muted)]">{item.label}</p>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
 
@@ -100,10 +101,10 @@ function StudentApplicationsPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="text-center py-8 text-neutral-500">Loading...</div>
+              <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
             ) : applications.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-neutral-500 mb-4">No applications found</p>
+                <p className="text-[var(--color-text-muted)] mb-4">No applications found</p>
                 <Link href="/colleges">
                   <Button>Apply to College</Button>
                 </Link>
@@ -115,16 +116,16 @@ function StudentApplicationsPage() {
                   return (
                     <div 
                       key={app._id} 
-                      className="flex items-center justify-between p-4 border border-neutral-200 rounded-xl hover:bg-neutral-50"
+                      className="flex items-center justify-between p-4 border border-[var(--color-border)] rounded-xl hover:bg-[var(--color-bg-muted)]"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-neutral-100 rounded-xl flex items-center justify-center text-2xl">
+                        <div className="w-14 h-14 bg-[var(--color-bg-muted)] rounded-xl flex items-center justify-center text-2xl">
                           🏛️
                         </div>
                         <div>
-                          <p className="font-semibold text-neutral-900">{(app as any).college?.name}</p>
-                          <p className="text-sm text-neutral-500">{app.course}</p>
-                          <p className="text-xs text-neutral-400 mt-1">
+                          <p className="font-semibold text-[var(--color-text)]">{(app as any).college?.name}</p>
+                          <p className="text-sm text-[var(--color-text-muted)]">{app.course}</p>
+                          <p className="text-xs text-[var(--color-text-muted)] mt-1">
                             Applied: {formatDate(app.appliedAt)}
                           </p>
                         </div>
@@ -132,7 +133,7 @@ function StudentApplicationsPage() {
                       <div className="text-right flex items-center gap-4">
                         <div>
                           <Badge variant={badge.variant} className="mb-2">{badge.label}</Badge>
-                          <p className="text-sm font-medium text-neutral-700">
+                          <p className="text-sm font-medium text-[var(--color-text-secondary)]">
                             {app.paymentAmount ? `₹${app.paymentAmount.toLocaleString()}` : "—"}
                           </p>
                           <Link href={`/dashboard/student/applications/${app._id}`}>
@@ -149,7 +150,7 @@ function StudentApplicationsPage() {
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-between pt-4 border-t">
-                <p className="text-sm text-neutral-500">
+                <p className="text-sm text-[var(--color-text-muted)]">
                   Showing {applications.length} of {pagination.total}
                 </p>
                 <div className="flex gap-2">

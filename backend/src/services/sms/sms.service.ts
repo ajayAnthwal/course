@@ -113,6 +113,11 @@ class SmsService {
       return { success: false, provider: provider.name, error: error.message };
     }
   }
+
+  async sendOTP(to: string, otp: string): Promise<SendSmsResult> {
+    const message = `Your EduPortal verification code is ${otp}. This code expires in 10 minutes.`;
+    return this.sendRaw(to, message);
+  }
 }
 
 export default new SmsService();

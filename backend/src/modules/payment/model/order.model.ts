@@ -1,11 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export type PaymentStatus = "created" | "authorized" | "captured" | "refunded" | "failed";
-export type PlanType = "basic" | "premium" | "enterprise";
+export type PlanType = "basic" | "premium" | "enterprise" | "application_fee";
 
 export interface IOrder extends Document {
   user: mongoose.Types.ObjectId;
   college?: mongoose.Types.ObjectId;
+  application?: mongoose.Types.ObjectId;
   plan: PlanType;
   amount: number;
   currency: string;
@@ -15,6 +16,8 @@ export interface IOrder extends Document {
   status: PaymentStatus;
   receipt?: string;
   notes?: string;
+  refundAmount?: number;
+  refundDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,9 +33,13 @@ const orderSchema = new Schema<IOrder>(
       type: Schema.Types.ObjectId,
       ref: "College",
     },
+    application: {
+      type: Schema.Types.ObjectId,
+      ref: "Application",
+    },
     plan: {
       type: String,
-      enum: ["basic", "premium", "enterprise"],
+      enum: ["basic", "premium", "enterprise", "application_fee"],
       required: true,
     },
     amount: {
@@ -58,6 +65,8 @@ const orderSchema = new Schema<IOrder>(
     },
     receipt: String,
     notes: String,
+    refundAmount: Number,
+    refundDate: Date,
   },
   {
     timestamps: true,

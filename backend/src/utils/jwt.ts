@@ -4,6 +4,8 @@ import config from "../config";
 export interface JwtPayload {
   id: string;
   role: string;
+  verified?: boolean;
+  [key: string]: any;
 }
 
 export const signToken = (payload: JwtPayload): string => {

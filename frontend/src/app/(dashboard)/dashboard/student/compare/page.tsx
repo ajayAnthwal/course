@@ -92,8 +92,8 @@ export default function ComparePage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">Compare Colleges</h1>
-            <p className="text-neutral-500">Compare up to 4 colleges side by side</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">Compare Colleges</h1>
+            <p className="text-[var(--color-text-muted)]">Compare up to 4 colleges side by side</p>
           </div>
           <Button onClick={() => setShowSearch(!showSearch)}>
             {showSearch ? "Close Search" : "Add College"}
@@ -114,19 +114,19 @@ export default function ComparePage() {
               />
               <div className="max-h-64 overflow-y-auto space-y-2">
                 {isLoading ? (
-                  <p className="text-center py-4 text-neutral-500">Loading...</p>
+                  <p className="text-center py-4 text-[var(--color-text-muted)]">Loading...</p>
                 ) : ((collegesData as any)?.data || []).length === 0 ? (
-                  <p className="text-center py-4 text-neutral-500">No colleges found</p>
+                  <p className="text-center py-4 text-[var(--color-text-muted)]">No colleges found</p>
                 ) : (
                   ((collegesData as any)?.data || []).map((college: any) => (
                     <div
                       key={college._id}
-                      className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 cursor-pointer"
+                      className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg hover:bg-[var(--color-border-subtle)] cursor-pointer"
                       onClick={() => addToCompare(college)}
                     >
                       <div>
                         <p className="font-medium">{college.name}</p>
-                        <p className="text-sm text-neutral-500">{college.location?.city}, {college.location?.state}</p>
+                        <p className="text-sm text-[var(--color-text-muted)]">{college.location?.city}, {college.location?.state}</p>
                       </div>
                       <Badge variant="secondary">{college.type}</Badge>
                     </div>
@@ -143,7 +143,7 @@ export default function ComparePage() {
             <CardContent className="p-12 text-center">
               <div className="text-6xl mb-4">⚖️</div>
               <h3 className="text-lg font-semibold mb-2">No Colleges to Compare</h3>
-              <p className="text-neutral-500 mb-4">Add colleges from your wishlist or search to compare them</p>
+              <p className="text-[var(--color-text-muted)] mb-4">Add colleges from your wishlist or search to compare them</p>
               <Button onClick={() => setShowSearch(true)}>Add College</Button>
             </CardContent>
           </Card>
@@ -152,14 +152,14 @@ export default function ComparePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-neutral-50 border-b">
-                    <th className="text-left p-4 font-medium text-neutral-600">Feature</th>
+                  <tr className="bg-[var(--color-bg-muted)] border-b">
+                    <th className="text-left p-4 font-medium text-[var(--color-text-secondary)]">Feature</th>
                     {compareList.map((college) => (
                       <th key={college._id} className="text-left p-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="font-semibold">{college.name}</p>
-                            <p className="text-xs text-neutral-500">{college.city}</p>
+                            <p className="text-xs text-[var(--color-text-muted)]">{college.city}</p>
                           </div>
                           <Button
                             variant="ghost"
@@ -176,20 +176,20 @@ export default function ComparePage() {
                 </thead>
                 <tbody>
                   {comparisonFields.map((field) => (
-                    <tr key={field.key} className="border-b border-neutral-100">
-                      <td className="p-4 font-medium text-neutral-600">{field.label}</td>
+                    <tr key={field.key} className="border-b border-[var(--color-border-subtle)]">
+                      <td className="p-4 font-medium text-[var(--color-text-secondary)]">{field.label}</td>
                       {compareList.map((college: any) => (
                         <td key={college._id} className="p-4">
                           {field.render 
-                            ? field.render(college[field.key as keyof college])
-                            : college[field.key as keyof college] || "N/A"
+                            ? field.render(college[field.key as keyof typeof college])
+                            : (college[field.key as keyof typeof college] || "N/A")
                           }
                         </td>
                       ))}
                     </tr>
                   ))}
                   <tr>
-                    <td className="p-4 font-medium text-neutral-600">Actions</td>
+                    <td className="p-4 font-medium text-[var(--color-text-secondary)]">Actions</td>
                     {compareList.map((college) => (
                       <td key={college._id} className="p-4">
                         <Link href={`/colleges/${college._id}`}>

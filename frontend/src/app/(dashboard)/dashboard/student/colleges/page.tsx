@@ -43,6 +43,8 @@ function StudentCollegesPage() {
   const colleges = (data as any)?.data || [];
   const pagination = (data as any)?.pagination || { page: 1, totalPages: 1 };
 
+  console.log("Colleges data:", JSON.stringify(colleges, null, 2));
+
   const addToWishlist = async (collegeId: string) => {
     try {
       await apiClient.post("/wishlist", { collegeId });
@@ -54,19 +56,19 @@ function StudentCollegesPage() {
 
   const getTypeBadge = (type: string) => {
     const colors: Record<string, string> = {
-      "Private": "bg-blue-100 text-blue-800",
-      "Government": "bg-green-100 text-green-800",
-      "Government-Aided": "bg-yellow-100 text-yellow-800",
+      "Private": "bg-indigo-100 text-indigo-700 border-indigo-200",
+      "Government": "bg-emerald-100 text-emerald-700 border-emerald-200",
+      "Government-Aided": "bg-amber-100 text-amber-700 border-amber-200",
     };
-    return colors[type] || "bg-gray-100 text-gray-800";
+    return colors[type] || "bg-slate-100 text-slate-600 border-slate-200";
   };
 
   return (
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Discover Colleges</h1>
-          <p className="text-neutral-500">Find and compare colleges that match your preferences</p>
+          <h1 className="text-2xl font-bold">Discover Colleges</h1>
+          <p className="text-sm">Find and compare colleges that match your preferences</p>
         </div>
 
         {/* Search and Filters */}
@@ -124,19 +126,19 @@ function StudentCollegesPage() {
 
         {/* Results Count */}
         <div className="flex items-center justify-between">
-          <p className="text-neutral-500">
+          <p className="text-sm">
             {isLoading ? "Loading..." : `${colleges.length} colleges found`}
           </p>
         </div>
 
         {/* College Grid */}
         {isLoading ? (
-          <div className="text-center py-12 text-neutral-500">Loading colleges...</div>
+          <div className="text-center py-12">Loading colleges...</div>
         ) : colleges.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
               <div className="text-6xl mb-4">🏛️</div>
-              <p className="text-neutral-500 mb-4">No colleges found matching your criteria</p>
+              <p className="mb-4">No colleges found matching your criteria</p>
               <Button onClick={() => { setSearchQuery(""); setCityFilter(""); setTypeFilter(""); setCourseFilter(""); }}>
                 Clear Filters
               </Button>
@@ -145,40 +147,52 @@ function StudentCollegesPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {colleges.map((college: College) => (
-              <Card key={college._id} className="overflow-hidden">
-                <div className="h-40 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                  <span className="text-6xl">🏛️</span>
+              <Card key={college._id} className="overflow-hidden border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 bg-white rounded-2xl">
+                <div className="h-44 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-7xl filter drop-shadow-lg">🏛️</span>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <button 
+                      onClick={() => addToWishlist(college._id)}
+                      className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-xl hover:bg-white hover:scale-110 transition-all shadow-md"
+                    >
+                      🤍
+                    </button>
+                  </div>
                 </div>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <h3 className="font-semibold text-lg">{college.name}</h3>
-                      <p className="text-sm text-neutral-500">
-                        {college.location?.city}, {college.location?.state}
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 pr-2">
+                      <h3 className="font-bold text-lg text-slate-900 leading-tight">{college.name || "College Name"}</h3>
+                      <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                        <span>📍</span>
+                        {college.location?.city || "City"}, {college.location?.state || "State"}
                       </p>
                     </div>
-                    <Badge className={getTypeBadge(college.type)}>{college.type}</Badge>
+                    <Badge className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${getTypeBadge(college.type)}`}>{college.type || "Private"}</Badge>
                   </div>
-                  
-                  <div className="flex items-center gap-4 mt-3">
-                    <div className="flex items-center gap-1">
-                      <span className="text-yellow-500">⭐</span>
-                      <span className="text-sm font-medium">{college.rating || "N/A"}</span>
+
+                  <div className="flex items-center gap-4 mt-2 py-2 border-y border-slate-100">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg">⭐</span>
+                      <span className="text-sm font-bold text-amber-600">{college.rating != null ? college.rating.toFixed(1) : "N/A"}</span>
                     </div>
-                    {college.ranking && (
-                      <span className="text-sm text-neutral-500">Rank #{college.ranking}</span>
+                    {college.ranking != null && (
+                      <span className="text-sm font-medium text-indigo-600">Rank #{college.ranking}</span>
                     )}
-                    {college.reviewCount && (
-                      <span className="text-sm text-neutral-500">({college.reviewCount} reviews)</span>
+                    {college.reviewCount != null && (
+                      <span className="text-sm text-slate-400">({college.reviewCount})</span>
                     )}
                   </div>
 
                   {college.courses && college.courses.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-xs text-neutral-500 mb-1">Top Courses:</p>
-                      <div className="flex flex-wrap gap-1">
+                    <div className="mt-4">
+                      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Top Courses</p>
+                      <div className="flex flex-wrap gap-1.5">
                         {college.courses.slice(0, 3).map((course: any) => (
-                          <Badge key={course._id} variant="outline" size="sm">
+                          <Badge key={course._id} variant="outline" size="sm" className="bg-slate-50 border-slate-200 text-slate-600 text-xs px-2 py-0.5">
                             {course.name}
                           </Badge>
                         ))}
@@ -187,23 +201,23 @@ function StudentCollegesPage() {
                   )}
 
                   {college.feeStructure && (
-                    <div className="mt-3 pt-3 border-t border-neutral-100">
-                      <span className="text-sm text-neutral-500">Fees: </span>
-                      <span className="font-semibold">
-                        ₹{college.feeStructure.min?.toLocaleString()} - ₹{college.feeStructure.max?.toLocaleString()}
-                      </span>
+                    <div className="mt-4 pt-4 border-t border-slate-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm text-slate-500">Annual Fees</span>
+                        <span className="font-bold text-lg text-slate-900">
+                          ₹{college.feeStructure.min?.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-slate-400">- ₹{college.feeStructure.max?.toLocaleString()}</span>
+                      </div>
                     </div>
                   )}
 
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-3 mt-5">
                     <Link href={`/dashboard/student/compare?add=${college._id}`} className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full">Compare</Button>
+                      <Button variant="outline" size="sm" className="w-full border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-slate-400 font-medium rounded-xl">Compare</Button>
                     </Link>
-                    <Button variant="outline" size="sm" onClick={() => addToWishlist(college._id)}>
-                      ❤️
-                    </Button>
-                    <Link href={`/dashboard/student/applications/new?college=${college._id}`} className="flex-1">
-                      <Button size="sm" className="w-full">Apply</Button>
+                    <Link href={`/dashboard/student/applications/new?college=${college._id}`} className="flex-[2]">
+                      <Button size="sm" className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all">Apply Now</Button>
                     </Link>
                   </div>
                 </CardContent>

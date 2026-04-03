@@ -77,8 +77,8 @@ function StudentEnquiriesContent() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">My Enquiries</h1>
-            <p className="text-neutral-500 mt-1">Track the status of your college enquiries.</p>
+            <h1 className="text-2xl font-bold">My Enquiries</h1>
+            <p className="text-sm mt-1">Track the status of your college enquiries.</p>
           </div>
           <Link href="/colleges">
             <Button leftIcon={
@@ -95,7 +95,7 @@ function StudentEnquiriesContent() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm text-neutral-500">Filter:</span>
+              <span className="text-sm text-[var(--color-text-muted)]">Filter:</span>
               <div className="w-48">
                 <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setPage(1); }}>
                   <SelectTrigger><SelectValue placeholder="All Status" /></SelectTrigger>
@@ -119,8 +119,8 @@ function StudentEnquiriesContent() {
           ) : leads.length === 0 ? (
             <div className="text-center py-16 px-4">
               <div className="text-4xl mb-3">📋</div>
-              <p className="text-neutral-500 font-medium">No enquiries found</p>
-              <p className="text-sm text-neutral-400 mt-1">
+              <p className="text-[var(--color-text-muted)] font-medium">No enquiries found</p>
+              <p className="text-sm text-[var(--color-text-muted)] mt-1">
                 {statusFilter ? "Try a different filter" : "Start by exploring colleges and sending an enquiry"}
               </p>
               {!statusFilter && (
@@ -133,12 +133,12 @@ function StudentEnquiriesContent() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-neutral-100">
-                    <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-6 py-4">College</th>
-                    <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-6 py-4">Course</th>
-                    <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-6 py-4">Status</th>
-                    <th className="text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider px-6 py-4">Date</th>
-                    <th className="text-right text-xs font-semibold text-neutral-500 uppercase tracking-wider px-6 py-4">Actions</th>
+                  <tr className="border-b border-[var(--color-border-subtle)]">
+                    <th className="text-left text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-6 py-4">College</th>
+                    <th className="text-left text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-6 py-4">Course</th>
+                    <th className="text-left text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-6 py-4">Status</th>
+                    <th className="text-left text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-6 py-4">Date</th>
+                    <th className="text-right text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-6 py-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -148,11 +148,11 @@ function StudentEnquiriesContent() {
                     return (
                       <tr
                         key={lead._id}
-                        className="border-b border-neutral-50 last:border-0 hover:bg-neutral-50/50 transition-colors"
+                        className="border-b border-[var(--color-border-subtle)] last:border-0 hover:bg-[var(--color-bg-muted)] transition-colors"
                       >
                         <td className="px-6 py-4">
                           <div>
-                            <p className="font-medium text-neutral-900 text-sm">{getCollegeName(lead.college)}</p>
+                            <p className="font-medium text-[var(--color-text)] text-sm">{getCollegeName(lead.college)}</p>
                             {collegeId && (
                               <Link
                                 href={`/colleges/${collegeId}`}
@@ -164,7 +164,7 @@ function StudentEnquiriesContent() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-neutral-600">{lead.course || "General enquiry"}</p>
+                          <p className="text-sm text-[var(--color-text-secondary)]">{lead.course || "General enquiry"}</p>
                         </td>
                         <td className="px-6 py-4">
                           <Badge variant={badge.variant} size="sm" dot>
@@ -172,7 +172,7 @@ function StudentEnquiriesContent() {
                           </Badge>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-sm text-neutral-500">{formatDate(lead.createdAt)}</p>
+                          <p className="text-sm text-[var(--color-text-muted)]">{formatDate(lead.createdAt)}</p>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <Button variant="ghost" size="sm" onClick={() => openDetail(lead)}>
@@ -189,8 +189,8 @@ function StudentEnquiriesContent() {
 
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-100">
-              <p className="text-sm text-neutral-500">
+            <div className="flex items-center justify-between px-6 py-4 border-t border-[var(--color-border-subtle)]">
+              <p className="text-sm text-[var(--color-text-muted)]">
                 Showing {(pagination.page - 1) * pagination.limit + 1}–{Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total}
               </p>
               <div className="flex items-center gap-2">
@@ -202,7 +202,7 @@ function StudentEnquiriesContent() {
                 >
                   Previous
                 </Button>
-                <span className="text-sm text-neutral-500 px-2">
+                <span className="text-sm text-[var(--color-text-muted)] px-2">
                   Page {pagination.page} of {pagination.totalPages}
                 </span>
                 <Button
@@ -230,8 +230,8 @@ function StudentEnquiriesContent() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-neutral-900">{getCollegeName(selectedLead.college)}</h3>
-                <p className="text-sm text-neutral-500">Submitted on {formatDate(selectedLead.createdAt)}</p>
+                <h3 className="text-lg font-semibold text-[var(--color-text)]">{getCollegeName(selectedLead.college)}</h3>
+                <p className="text-sm text-[var(--color-text-muted)]">Submitted on {formatDate(selectedLead.createdAt)}</p>
               </div>
               <Badge variant={statusBadge[selectedLead.status]?.variant || "default"} size="md" dot>
                 {statusBadge[selectedLead.status]?.label || selectedLead.status}
@@ -240,41 +240,41 @@ function StudentEnquiriesContent() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Your Name</p>
-                <p className="text-sm font-medium text-neutral-900">{selectedLead.name}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Your Name</p>
+                <p className="text-sm font-medium text-[var(--color-text)]">{selectedLead.name}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Email</p>
-                <p className="text-sm text-neutral-700">{selectedLead.email}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Email</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">{selectedLead.email}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Phone</p>
-                <p className="text-sm text-neutral-700">{selectedLead.phone}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Phone</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">{selectedLead.phone}</p>
               </div>
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Course</p>
-                <p className="text-sm text-neutral-700">{selectedLead.course || "—"}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Course</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">{selectedLead.course || "—"}</p>
               </div>
             </div>
 
             {selectedLead.message && (
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Your Message</p>
-                <p className="text-sm text-neutral-700 bg-neutral-50 rounded-xl p-3">{selectedLead.message}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Your Message</p>
+                <p className="text-sm text-[var(--color-text-secondary)] bg-[var(--color-bg-muted)] rounded-xl p-3">{selectedLead.message}</p>
               </div>
             )}
 
             {selectedLead.notes && (
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Admin Notes</p>
-                <p className="text-sm text-neutral-700 bg-primary-50 rounded-xl p-3">{selectedLead.notes}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Admin Notes</p>
+                <p className="text-sm text-[var(--color-text-secondary)] bg-[var(--color-primary-50)] rounded-xl p-3">{selectedLead.notes}</p>
               </div>
             )}
 
             {selectedLead.followUpDate && (
               <div>
-                <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider mb-1">Follow-up Date</p>
-                <p className="text-sm text-neutral-700">{formatDate(selectedLead.followUpDate)}</p>
+                <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Follow-up Date</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">{formatDate(selectedLead.followUpDate)}</p>
               </div>
             )}
           </div>

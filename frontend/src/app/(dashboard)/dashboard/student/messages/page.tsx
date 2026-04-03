@@ -102,9 +102,9 @@ function StudentMessagesPage() {
             </div>
             <div className="overflow-y-auto h-[calc(100%-4rem)]">
               {loading ? (
-                <div className="p-4 text-center text-neutral-500">Loading...</div>
+                <div className="p-4 text-center text-[var(--color-text-muted)]">Loading...</div>
               ) : conversations.length === 0 ? (
-                <div className="p-4 text-center text-neutral-500">
+                <div className="p-4 text-center text-[var(--color-text-muted)]">
                   No conversations yet
                 </div>
               ) : (
@@ -124,8 +124,8 @@ function StudentMessagesPage() {
                           <Badge variant="primary" size="sm">{conv.unreadCount}</Badge>
                         )}
                       </div>
-                      <p className="text-sm text-neutral-500 truncate">{conv.lastMessage?.content}</p>
-                      <p className="text-xs text-neutral-400 mt-1">{formatDate(conv.lastMessageAt || conv.lastMessage?.createdAt)}</p>
+                      <p className="text-sm text-[var(--color-text-muted)] truncate">{conv.lastMessage?.content}</p>
+                      <p className="text-xs text-[var(--color-text-muted)] mt-1">{formatDate(conv.lastMessageAt || conv.lastMessage?.createdAt || "")}</p>
                     </div>
                   );
                 })
@@ -139,7 +139,7 @@ function StudentMessagesPage() {
                 <>
                   <div className="p-4 border-b border-neutral-200">
                     <h3 className="font-semibold">{selectedConversation.college?.name || "Chat"}</h3>
-                    <p className="text-sm text-neutral-500">Chat with college counselor</p>
+                    <p className="text-sm text-[var(--color-text-muted)]">Chat with college counselor</p>
                   </div>
                   
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -151,13 +151,13 @@ function StudentMessagesPage() {
                         <div
                           className={`max-w-[70%] p-3 rounded-xl ${
                             msg.sender._id === user?._id
-                              ? "bg-primary-500 text-white"
-                              : "bg-neutral-100 text-neutral-900"
+                              ? "bg-[var(--color-primary-500)] text-white"
+                              : "bg-[var(--color-bg-muted)] text-[var(--color-text)]"
                           }`}
                         >
                           <p className="text-sm">{msg.content}</p>
                           <p className={`text-xs mt-1 ${
-                            msg.sender._id === user?._id ? "text-primary-100" : "text-neutral-400"
+                            msg.sender._id === user?._id ? "text-[var(--color-primary-200)]" : "text-[var(--color-text-muted)]"
                           }`}>
                             {formatDate(msg.createdAt)}
                           </p>
@@ -183,7 +183,7 @@ function StudentMessagesPage() {
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
                   <div className="text-6xl mb-4">💬</div>
-                  <p className="text-neutral-500">Select a conversation to start chatting</p>
+                          <p className="text-[var(--color-text-muted)]">Select a conversation to start chatting</p>
                 </div>
               </div>
             )}

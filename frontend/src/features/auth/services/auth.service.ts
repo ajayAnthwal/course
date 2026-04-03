@@ -42,6 +42,35 @@ export const authService = {
     return response.data;
   },
 
+  async sendOTP(phone: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await apiClient.post("/auth/send-otp", { phone });
+    return response.data;
+  },
+
+  async verifyOTP(phone: string, otp: string): Promise<ApiResponse<AuthResponse>> {
+    const response = await apiClient.post("/auth/verify-otp", { phone, otp });
+    return response.data;
+  },
+
+  async forgotPassword(email: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await apiClient.post("/auth/forgot-password", { email });
+    return response.data;
+  },
+
+  async resetPassword(token: string, newPassword: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await apiClient.post("/auth/reset-password", { token, newPassword, confirmPassword: newPassword });
+    return response.data;
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<ApiResponse<{ message: string }>> {
+    const response = await apiClient.post("/auth/change-password", { 
+      currentPassword, 
+      newPassword, 
+      confirmNewPassword: newPassword 
+    });
+    return response.data;
+  },
+
   setAuthData(token: string, user: User): void {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));

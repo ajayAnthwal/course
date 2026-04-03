@@ -17,6 +17,32 @@ interface UpdateUserInput {
   phone?: string;
   role?: string;
   isActive?: boolean;
+  dateOfBirth?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  preferredCourse?: string;
+  preferredCity?: string;
+  educationDetails?: {
+    school?: string;
+    schoolBoard?: string;
+    schoolYear?: string;
+    schoolMarks?: string;
+    college?: string;
+    collegeBoard?: string;
+    collegeYear?: string;
+    collegeMarks?: string;
+    degree?: string;
+    university?: string;
+    graduationYear?: string;
+    graduationMarks?: string;
+  };
+  notificationPreferences?: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
 }
 
 export function useUsers(filters: GetUsersQuery = {}) {
@@ -43,6 +69,7 @@ export function useUpdateUser() {
       userService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
     },
   });
 }

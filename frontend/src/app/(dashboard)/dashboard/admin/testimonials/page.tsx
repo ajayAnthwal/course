@@ -201,7 +201,7 @@ function AdminTestimonialsContent() {
           </table>
         </div>
 
-        {isLoading ? (
+        {testimonialsLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">{[1, 2, 3].map((i) => <div key={i} className="bg-white rounded-2xl h-48 animate-pulse border border-neutral-200" />)}</div>
         ) : testimonials.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-neutral-200">

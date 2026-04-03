@@ -126,20 +126,20 @@ function StudentReviewsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900">Reviews & Q&A</h1>
-            <p className="text-neutral-500">Your reviews and questions for colleges</p>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">Reviews & Q&A</h1>
+            <p className="text-[var(--color-text-muted)]">Your reviews and questions for colleges</p>
           </div>
           <Button onClick={() => setIsModalOpen(true)}>Add Review</Button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-neutral-200">
+        <div className="flex gap-2 border-b border-[var(--color-border-subtle)]">
           <button
             onClick={() => setActiveTab("reviews")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === "reviews"
                 ? "text-primary-600 border-b-2 border-primary-600"
-                : "text-neutral-500 hover:text-neutral-700"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
             }`}
           >
             My Reviews ({reviews.length})
@@ -149,7 +149,7 @@ function StudentReviewsPage() {
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === "questions"
                 ? "text-primary-600 border-b-2 border-primary-600"
-                : "text-neutral-500 hover:text-neutral-700"
+                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
             }`}
           >
             My Questions ({questions.length})
@@ -160,12 +160,12 @@ function StudentReviewsPage() {
         {activeTab === "reviews" && (
           <div className="space-y-4">
             {loading ? (
-              <div className="text-center py-8 text-neutral-500">Loading...</div>
+              <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
             ) : reviews.length === 0 ? (
               <Card>
                 <CardContent className="p-8 text-center">
                   <div className="text-4xl mb-4">⭐</div>
-                  <p className="text-neutral-500 mb-4">No reviews yet</p>
+                  <p className="text-[var(--color-text-muted)] mb-4">No reviews yet</p>
                   <Button onClick={() => setIsModalOpen(true)}>Write a Review</Button>
                 </CardContent>
               </Card>
@@ -178,10 +178,10 @@ function StudentReviewsPage() {
                         <p className="font-semibold">{review.college.name}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-yellow-500">{"⭐".repeat(review.rating)}</span>
-                          <span className="text-sm text-neutral-500">{review.rating}/5</span>
+                          <span className="text-sm text-[var(--color-text-muted)]">{review.rating}/5</span>
                         </div>
-                        <p className="text-sm text-neutral-600 mt-2">{review.content}</p>
-                        <p className="text-xs text-neutral-400 mt-2">{formatDate(review.createdAt)}</p>
+                        <p className="text-sm text-[var(--color-text-secondary)] mt-2">{review.content}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] mt-2">{formatDate(review.createdAt)}</p>
                       </div>
                       <Badge variant={statusBadge(review.status).variant} size="sm">
                         {statusBadge(review.status).label}
@@ -224,7 +224,7 @@ function StudentReviewsPage() {
 
             {questions.length === 0 ? (
               <Card>
-                <CardContent className="p-8 text-center text-neutral-500">
+                <CardContent className="p-8 text-center text-[var(--color-text-muted)]">
                   No questions asked yet
                 </CardContent>
               </Card>
@@ -235,11 +235,11 @@ function StudentReviewsPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <p className="font-medium">{q.college.name}</p>
-                        <p className="text-neutral-700 mt-1">Q: {q.question}</p>
+                        <p className="text-[var(--color-text-secondary)] mt-1">Q: {q.question}</p>
                         {q.answer && (
-                          <p className="text-neutral-600 mt-2 bg-neutral-50 p-2 rounded">A: {q.answer}</p>
+                          <p className="text-[var(--color-text-secondary)] mt-2 bg-[var(--color-bg-muted)] p-2 rounded">A: {q.answer}</p>
                         )}
-                        <p className="text-xs text-neutral-400 mt-2">{formatDate(q.createdAt)}</p>
+                        <p className="text-xs text-[var(--color-text-muted)] mt-2">{formatDate(q.createdAt)}</p>
                       </div>
                       <Badge variant={statusBadge(q.status).variant} size="sm">
                         {statusBadge(q.status).label}
@@ -275,7 +275,7 @@ function StudentReviewsPage() {
                   <button
                     key={r}
                     onClick={() => setRating(r)}
-                    className={`text-2xl ${r <= rating ? "text-yellow-500" : "text-neutral-300"}`}
+                    className={`text-2xl ${r <= rating ? "text-yellow-500" : "text-[var(--color-text-muted)]"}`}
                   >
                     ⭐
                   </button>

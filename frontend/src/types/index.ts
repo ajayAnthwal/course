@@ -10,6 +10,33 @@ export interface User {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  educationDetails?: {
+    school?: string;
+    schoolBoard?: string;
+    schoolYear?: string;
+    schoolMarks?: string;
+    college?: string;
+    collegeBoard?: string;
+    collegeYear?: string;
+    collegeMarks?: string;
+    degree?: string;
+    university?: string;
+    graduationYear?: string;
+    graduationMarks?: string;
+  };
+  preferredCourse?: string;
+  preferredCity?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  notificationPreferences?: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
 }
 
 export interface ApiResponse<T = unknown> {
@@ -240,4 +267,125 @@ export interface Testimonial {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Application {
+  _id: string;
+  user: string | User;
+  college: string | College;
+  course: string;
+  status: "applied" | "under_review" | "shortlisted" | "rejected" | "accepted" | "paid" | "enrolled";
+  paymentStatus: "pending" | "paid" | "failed" | "refunded";
+  paymentAmount?: number;
+  paymentId?: string;
+  formData: Record<string, any>;
+  documents: string[];
+  notes?: string;
+  rejectedReason?: string;
+  timeline: {
+    status: string;
+    note?: string;
+    date: string;
+  }[];
+  appliedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaymentOrder {
+  _id: string;
+  user: string | User;
+  college?: string | College;
+  application?: string | Application;
+  plan: string;
+  amount: number;
+  currency: string;
+  razorpayOrderId: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+  status: "created" | "authorized" | "captured" | "refunded" | "failed";
+  receipt?: string;
+  notes?: string;
+  refundAmount?: number;
+  refundDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Notification {
+  _id: string;
+  user?: string | User;
+  type: "sms" | "email" | "whatsapp" | "in-app";
+  title: string;
+  message: string;
+  status: "pending" | "sent" | "failed";
+  recipient: string;
+  templateId?: string;
+  metadata?: Record<string, any>;
+  sentAt?: string;
+  error?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WishlistItem {
+  _id: string;
+  user: string | User;
+  college: string | College;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Document {
+  _id: string;
+  user: string | User;
+  name: string;
+  type: string;
+  url: string;
+  size: number;
+  category: "marksheet" | "id_proof" | "certificate" | "photo" | "other";
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Message {
+  _id: string;
+  sender: string | User;
+  receiver: string | User;
+  college?: string | College;
+  content: string;
+  attachments?: string[];
+  read: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Review {
+  _id: string;
+  user: string | User;
+  college: string | College;
+  rating: number;
+  title?: string;
+  content: string;
+  pros?: string[];
+  cons?: string[];
+  helpful: number;
+  isVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ActivityLog {
+  _id: string;
+  user: string | User;
+  action: string;
+  entityType: string;
+  entityId: string;
+  details?: Record<string, any>;
+  ipAddress?: string;
+  userAgent?: string;
+  createdAt: string;
 }

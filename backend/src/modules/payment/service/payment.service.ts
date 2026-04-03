@@ -1,4 +1,5 @@
 import Order, { IOrder, PlanType, PaymentStatus } from "../model/order.model";
+import Application from "../../application/model/application.model";
 import config from "../../../config";
 import AppError from "../../../utils/appError";
 
@@ -6,12 +7,14 @@ const PLAN_PRICES: Record<PlanType, number> = {
   basic: 99900,
   premium: 499900,
   enterprise: 1999900,
+  application_fee: 50000,
 };
 
 const PLAN_DURATION_DAYS: Record<PlanType, number> = {
   basic: 30,
   premium: 90,
   enterprise: 365,
+  application_fee: 0,
 };
 
 class PaymentService {
@@ -38,6 +41,28 @@ class PaymentService {
       college: collegeId,
       plan,
       amount,
+      currency: "INR",
+      razorpayOrderId,
+      receipt: razorpayOrderId,
+      status: "created",
+    });
+
+    return order;
+  }
+
+  async createApplicationFeeOrder(userId: string, applicationId: string, amount: number): Promise<IOrder> {
+    const application = await Application.findById(applicationId);
+    if (!application) throw new AppError("Application not found", 404);
+    if (application.user.toString() !== userId) throw new AppError("Unauthorized", 403);
+
+    const razorpayOrderId = `appfee_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+    const order = await Order.create({
+      user: userId,
+      college: application.college,
+      application: applicationId,
+      plan: "application_fee",
+      amount: amount * 100,
       currency: "INR",
       razorpayOrderId,
       receipt: razorpayOrderId,

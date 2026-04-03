@@ -21,12 +21,12 @@ export function Card({ children, className, hover = false, padding = "md", borde
     <div
       className={cn(
         "bg-white rounded-2xl",
-        bordered && "border border-neutral-200/80",
-        "shadow-sm",
+        bordered && "border border-slate-200",
+        "shadow-md",
         hover && [
-          "cursor-pointer hover:shadow-lg hover:shadow-neutral-200/50 hover:border-neutral-300/80",
+          "cursor-pointer hover:shadow-xl hover:border-slate-300",
           "transition-all duration-300 ease-out",
-          "hover:-translate-y-0.5",
+          "hover:-translate-y-1",
         ],
         paddings[padding],
         className

@@ -35,7 +35,7 @@ interface FollowupsResponse {
   };
 }
 
-interface FollowupStats {
+export interface FollowupStats {
   total: number;
   pending: number;
   completed: number;

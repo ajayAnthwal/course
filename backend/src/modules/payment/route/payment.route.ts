@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as paymentController from "../controller/payment.controller";
 import { protect, restrictTo } from "../../../middlewares/auth";
 import { validate } from "../../../middlewares/validate";
-import { createOrderSchema, verifyPaymentSchema, updateOrderSchema } from "../validation/payment.validation";
+import { createOrderSchema, verifyPaymentSchema, updateOrderSchema, applicationFeeOrderSchema } from "../validation/payment.validation";
 
 const router = Router();
 
@@ -11,6 +11,7 @@ router.get("/plans", paymentController.getPlans);
 router.use(protect);
 
 router.post("/order", validate(createOrderSchema), paymentController.createOrder);
+router.post("/application-fee", validate(applicationFeeOrderSchema), paymentController.createApplicationFeeOrder);
 router.post("/verify", validate(verifyPaymentSchema), paymentController.verifyPayment);
 router.get("/orders", paymentController.getMyOrders);
 router.get("/orders/:id", paymentController.getOrderById);
