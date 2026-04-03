@@ -14,6 +14,9 @@ interface NavItem {
 const navItems: Record<UserRole, NavItem[]> = {
   admin: [
     { label: "Overview", href: "/dashboard/admin", icon: "📊" },
+    { label: "Analytics", href: "/dashboard/admin/analytics", icon: "📈" },
+    { label: "Payments", href: "/dashboard/admin/payments", icon: "💳" },
+    { label: "Notifications", href: "/dashboard/admin/notifications", icon: "🔔" },
     { label: "Users", href: "/dashboard/admin/users", icon: "👥" },
     { label: "Colleges", href: "/dashboard/admin/colleges", icon: "🏛️" },
     { label: "Courses", href: "/dashboard/admin/courses", icon: "📚" },
@@ -23,6 +26,7 @@ const navItems: Record<UserRole, NavItem[]> = {
     { label: "Blogs", href: "/dashboard/admin/blogs", icon: "✍️" },
     { label: "Testimonials", href: "/dashboard/admin/testimonials", icon: "💬" },
     { label: "Leads", href: "/dashboard/admin/leads", icon: "📋" },
+    { label: "Roles", href: "/dashboard/admin/roles", icon: "🔐" },
     { label: "Import Data", href: "/dashboard/admin/import", icon: "📥" },
     { label: "Settings", href: "/dashboard/admin/settings", icon: "⚙️" },
   ],
