@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, Textare
 import { useColleges } from "@/features/colleges";
 import apiClient from "@/services/axios";
 import { formatDate } from "@/lib/utils";
+import { FiStar, FiMessageCircle, FiPlus, FiEdit3, FiCheckCircle, FiClock, FiAlertCircle } from "react-icons/fi";
 
 interface Review {
   _id: string;
@@ -74,7 +75,6 @@ function StudentReviewsPage() {
       showToast("Please fill all fields", "error");
       return;
     }
-
     try {
       await apiClient.post("/reviews", {
         collegeId: selectedCollege,
@@ -96,7 +96,6 @@ function StudentReviewsPage() {
       showToast("Please fill all fields", "error");
       return;
     }
-
     try {
       await apiClient.post("/reviews/questions", {
         collegeId: questionCollege,
@@ -126,20 +125,19 @@ function StudentReviewsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text)]">Reviews & Q&A</h1>
-            <p className="text-[var(--color-text-muted)]">Your reviews and questions for colleges</p>
+            <h1 className="text-2xl font-bold text-gray-900">Reviews & Q&A</h1>
+            <p className="text-sm text-gray-600">Your reviews and questions for colleges</p>
           </div>
-          <Button onClick={() => setIsModalOpen(true)}>Add Review</Button>
+          <Button onClick={() => setIsModalOpen(true)} leftIcon={<FiPlus className="w-4 h-4" />}>Add Review</Button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 border-b border-[var(--color-border-subtle)]">
+        <div className="flex gap-2 border-b border-gray-200">
           <button
             onClick={() => setActiveTab("reviews")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === "reviews"
-                ? "text-primary-600 border-b-2 border-primary-600"
-                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             My Reviews ({reviews.length})
@@ -148,24 +146,25 @@ function StudentReviewsPage() {
             onClick={() => setActiveTab("questions")}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === "questions"
-                ? "text-primary-600 border-b-2 border-primary-600"
-                : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             My Questions ({questions.length})
           </button>
         </div>
 
-        {/* Reviews Tab */}
         {activeTab === "reviews" && (
           <div className="space-y-4">
             {loading ? (
-              <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
+              <div className="text-center py-8 text-gray-500">Loading...</div>
             ) : reviews.length === 0 ? (
               <Card>
                 <CardContent className="p-8 text-center">
-                  <div className="text-4xl mb-4">⭐</div>
-                  <p className="text-[var(--color-text-muted)] mb-4">No reviews yet</p>
+                  <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                    <FiStar className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 mb-4">No reviews yet</p>
                   <Button onClick={() => setIsModalOpen(true)}>Write a Review</Button>
                 </CardContent>
               </Card>
@@ -175,13 +174,17 @@ function StudentReviewsPage() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-semibold">{review.college.name}</p>
+                        <p className="font-semibold text-gray-900">{review.college.name}</p>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-yellow-500">{"⭐".repeat(review.rating)}</span>
-                          <span className="text-sm text-[var(--color-text-muted)]">{review.rating}/5</span>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((r) => (
+                              <FiStar key={r} className={`w-4 h-4 ${r <= review.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`} />
+                            ))}
+                          </div>
+                          <span className="text-sm text-gray-500">{review.rating}/5</span>
                         </div>
-                        <p className="text-sm text-[var(--color-text-secondary)] mt-2">{review.content}</p>
-                        <p className="text-xs text-[var(--color-text-muted)] mt-2">{formatDate(review.createdAt)}</p>
+                        <p className="text-sm text-gray-600 mt-2">{review.content}</p>
+                        <p className="text-xs text-gray-400 mt-2">{formatDate(review.createdAt)}</p>
                       </div>
                       <Badge variant={statusBadge(review.status).variant} size="sm">
                         {statusBadge(review.status).label}
@@ -194,7 +197,6 @@ function StudentReviewsPage() {
           </div>
         )}
 
-        {/* Questions Tab */}
         {activeTab === "questions" && (
           <div className="space-y-4">
             <Card>
@@ -224,7 +226,7 @@ function StudentReviewsPage() {
 
             {questions.length === 0 ? (
               <Card>
-                <CardContent className="p-8 text-center text-[var(--color-text-muted)]">
+                <CardContent className="p-8 text-center text-gray-500">
                   No questions asked yet
                 </CardContent>
               </Card>
@@ -234,12 +236,12 @@ function StudentReviewsPage() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <p className="font-medium">{q.college.name}</p>
-                        <p className="text-[var(--color-text-secondary)] mt-1">Q: {q.question}</p>
+                        <p className="font-medium text-gray-900">{q.college.name}</p>
+                        <p className="text-gray-600 mt-1">Q: {q.question}</p>
                         {q.answer && (
-                          <p className="text-[var(--color-text-secondary)] mt-2 bg-[var(--color-bg-muted)] p-2 rounded">A: {q.answer}</p>
+                          <p className="text-gray-600 mt-2 bg-gray-50 p-2 rounded">A: {q.answer}</p>
                         )}
-                        <p className="text-xs text-[var(--color-text-muted)] mt-2">{formatDate(q.createdAt)}</p>
+                        <p className="text-xs text-gray-400 mt-2">{formatDate(q.createdAt)}</p>
                       </div>
                       <Badge variant={statusBadge(q.status).variant} size="sm">
                         {statusBadge(q.status).label}
@@ -252,11 +254,10 @@ function StudentReviewsPage() {
           </div>
         )}
 
-        {/* Add Review Modal */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Write a Review" size="md">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">College</label>
+              <label className="block text-sm font-medium mb-2 text-gray-700">College</label>
               <Select value={selectedCollege} onValueChange={setSelectedCollege}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select college" />
@@ -269,15 +270,15 @@ function StudentReviewsPage() {
               </Select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Rating</label>
+              <label className="block text-sm font-medium mb-2 text-gray-700">Rating</label>
               <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((r) => (
                   <button
                     key={r}
                     onClick={() => setRating(r)}
-                    className={`text-2xl ${r <= rating ? "text-yellow-500" : "text-[var(--color-text-muted)]"}`}
+                    className="text-2xl"
                   >
-                    ⭐
+                    <FiStar className={`w-6 h-6 ${r <= rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`} />
                   </button>
                 ))}
               </div>

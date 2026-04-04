@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, Button, Input, Badge, useToas
 import { useUpdateUser } from "@/features/users";
 import { formatDate } from "@/lib/utils";
 import apiClient from "@/services/axios";
+import { FiUser, FiLock, FiBell, FiShield, FiEdit2, FiSave, FiX, FiCheck } from "react-icons/fi";
 
 function StudentSettingsPage() {
   const { user } = useAuth();
@@ -37,7 +38,7 @@ function StudentSettingsPage() {
     return (
       <DashboardLayout role="student" userName={user?.name}>
         <div className="flex items-center justify-center h-64">
-          <div className="text-[var(--color-text-muted)]">Loading settings...</div>
+          <div className="text-gray-500">Loading settings...</div>
         </div>
       </DashboardLayout>
     );
@@ -103,7 +104,6 @@ function StudentSettingsPage() {
       showToast("Password must be at least 8 characters", "error");
       return;
     }
-
     try {
       await apiClient.post("/auth/change-password", {
         currentPassword: passwords.current,
@@ -136,52 +136,48 @@ function StudentSettingsPage() {
   };
 
   const tabs = [
-    { id: "profile", label: "Profile" },
-    { id: "password", label: "Change Password" },
-    { id: "notifications", label: "Notifications" },
-    { id: "privacy", label: "Privacy" },
+    { id: "profile", label: "Profile", icon: FiUser },
+    { id: "password", label: "Change Password", icon: FiLock },
+    { id: "notifications", label: "Notifications", icon: FiBell },
+    { id: "privacy", label: "Privacy", icon: FiShield },
   ];
 
   return (
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">Settings</h1>
-          <p className="text-[var(--color-text-muted)]">Manage your account preferences</p>
+          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+          <p className="text-sm text-gray-600">Manage your account preferences</p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 border-b border-[var(--color-border-subtle)]">
+        <div className="flex gap-2 border-b border-gray-200 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "text-[var(--color-primary-600)] border-b-2 border-[var(--color-primary-600)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                  ? "text-indigo-600 border-b-2 border-indigo-600"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              {tab.label}
+              <tab.icon className="w-4 h-4" /> {tab.label}
             </button>
           ))}
         </div>
 
-        {/* Profile Tab */}
         {activeTab === "profile" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
               <Card>
                 <CardContent className="p-6 text-center">
-                  <div className="w-24 h-24 rounded-full bg-[var(--color-primary-100)] flex items-center justify-center mx-auto mb-4">
-                    <span className="text-3xl font-bold text-[var(--color-primary-700)]">
-                      {user?.name?.charAt(0).toUpperCase()}
-                    </span>
+                  <div className="w-24 h-24 rounded-full bg-indigo-100 flex items-center justify-center mx-auto mb-4">
+                    <FiUser className="w-10 h-10 text-indigo-600" />
                   </div>
-                  <h2 className="text-lg font-semibold">{user?.name}</h2>
-                  <p className="text-sm text-[var(--color-text-muted)]">{user?.email}</p>
+                  <h2 className="text-lg font-semibold text-gray-900">{user?.name}</h2>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
                   <Badge variant="primary" className="mt-2">Student</Badge>
-                  <p className="text-xs text-[var(--color-text-muted)] mt-4">
+                  <p className="text-xs text-gray-400 mt-4">
                     Member since {user?.createdAt ? formatDate(user.createdAt) : "N/A"}
                   </p>
                 </CardContent>
@@ -194,7 +190,7 @@ function StudentSettingsPage() {
                   <div className="flex items-center justify-between">
                     <CardTitle>Account Information</CardTitle>
                     {!isEditing && (
-                      <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                      <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} leftIcon={<FiEdit2 className="w-4 h-4" />}>
                         Edit
                       </Button>
                     )}
@@ -247,27 +243,27 @@ function StudentSettingsPage() {
                         />
                       </div>
                       <div className="flex justify-end gap-2">
-                        <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                        <Button onClick={handleSaveProfile} isLoading={updateUser.isPending}>Save</Button>
+                        <Button variant="outline" onClick={() => setIsEditing(false)} leftIcon={<FiX className="w-4 h-4" />}>Cancel</Button>
+                        <Button onClick={handleSaveProfile} isLoading={updateUser.isPending} leftIcon={<FiSave className="w-4 h-4" />}>Save</Button>
                       </div>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Name</p>
-                        <p className="font-medium">{user?.name}</p>
+                        <p className="text-xs text-gray-400 uppercase">Name</p>
+                        <p className="font-medium text-gray-900">{user?.name}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Email</p>
-                        <p className="font-medium">{user?.email}</p>
+                        <p className="text-xs text-gray-400 uppercase">Email</p>
+                        <p className="font-medium text-gray-900">{user?.email}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Phone</p>
-                        <p className="font-medium">{user?.phone || "Not provided"}</p>
+                        <p className="text-xs text-gray-400 uppercase">Phone</p>
+                        <p className="font-medium text-gray-900">{user?.phone || "Not provided"}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-[var(--color-text-muted)] uppercase">Preferred Course</p>
-                        <p className="font-medium">{form.preferredCourse || "Not set"}</p>
+                        <p className="text-xs text-gray-400 uppercase">Preferred Course</p>
+                        <p className="font-medium text-gray-900">{form.preferredCourse || "Not set"}</p>
                       </div>
                     </div>
                   )}
@@ -277,7 +273,6 @@ function StudentSettingsPage() {
           </div>
         )}
 
-        {/* Password Tab */}
         {activeTab === "password" && (
           <Card>
             <CardHeader>
@@ -307,7 +302,6 @@ function StudentSettingsPage() {
           </Card>
         )}
 
-        {/* Notifications Tab */}
         {activeTab === "notifications" && (
           <Card>
             <CardHeader>
@@ -324,8 +318,8 @@ function StudentSettingsPage() {
                   { key: "newColleges", label: "New College Alerts" },
                   { key: "promotions", label: "Promotions & Offers" },
                 ].map((item) => (
-                  <div key={item.key} className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
-                    <span className="font-medium">{item.label}</span>
+                  <div key={item.key} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="font-medium text-gray-700">{item.label}</span>
                     <Switch
                       checked={notifications[item.key as keyof typeof notifications]}
                       onCheckedChange={(checked) =>
@@ -340,7 +334,6 @@ function StudentSettingsPage() {
           </Card>
         )}
 
-        {/* Privacy Tab */}
         {activeTab === "privacy" && (
           <Card>
             <CardHeader>
@@ -348,30 +341,30 @@ function StudentSettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium">Profile Visibility</p>
-                    <p className="text-sm text-[var(--color-text-muted)]">Allow others to see your profile</p>
+                    <p className="font-medium text-gray-700">Profile Visibility</p>
+                    <p className="text-sm text-gray-500">Allow others to see your profile</p>
                   </div>
                   <Switch
                     checked={privacy.profileVisible}
                     onCheckedChange={(checked) => setPrivacy({ ...privacy, profileVisible: checked })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium">Show Activity</p>
-                    <p className="text-sm text-[var(--color-text-muted)]">Display your application activity</p>
+                    <p className="font-medium text-gray-700">Show Activity</p>
+                    <p className="text-sm text-gray-500">Display your application activity</p>
                   </div>
                   <Switch
                     checked={privacy.showActivity}
                     onCheckedChange={(checked) => setPrivacy({ ...privacy, showActivity: checked })}
                   />
                 </div>
-                <div className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium">Allow Messages</p>
-                    <p className="text-sm text-[var(--color-text-muted)]">Receive messages from colleges</p>
+                    <p className="font-medium text-gray-700">Allow Messages</p>
+                    <p className="text-sm text-gray-500">Receive messages from colleges</p>
                   </div>
                   <Switch
                     checked={privacy.allowMessages}

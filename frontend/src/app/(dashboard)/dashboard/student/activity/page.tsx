@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
-import { Card, CardContent, CardHeader, CardTitle, Badge } from "@/components/ui";
+import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from "@/components/ui";
 import apiClient from "@/services/axios";
 import { formatDate } from "@/lib/utils";
+import { FiFileText, FiHeart, FiHome, FiUser, FiFolder, FiCreditCard, FiLock, FiList, FiArrowLeft, FiArrowRight, FiCheckCircle, FiXCircle, FiClock } from "react-icons/fi";
 
 interface Activity {
   _id: string;
@@ -42,6 +43,10 @@ function StudentActivityPage() {
   const [actionFilter, setActionFilter] = useState("");
   const [resourceFilter, setResourceFilter] = useState("");
 
+  useEffect(() => {
+    fetchActivities(1);
+  }, []);
+
   const fetchActivities = async (page = 1) => {
     try {
       setLoading(true);
@@ -72,66 +77,73 @@ function StudentActivityPage() {
       update: "bg-blue-100 text-blue-800",
       delete: "bg-red-100 text-red-800",
       login: "bg-purple-100 text-purple-800",
-logout: "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]",
+      logout: "bg-gray-100 text-gray-600",
     };
-    const colorClass = actionColors[action.toLowerCase()] || "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]";
+    const colorClass = actionColors[action.toLowerCase()] || "bg-gray-100 text-gray-600";
     return <span className={`px-2 py-1 rounded-full text-xs font-medium ${colorClass}`}>{action}</span>;
   };
 
   const getResourceIcon = (resource: string) => {
-    const icons: Record<string, string> = {
-      application: "📝",
-      wishlist: "❤️",
-      college: "🏛️",
-      user: "👤",
-      document: "📄",
-      payment: "💳",
-      auth: "🔐",
+    const icons: Record<string, React.ReactNode> = {
+      application: <FiFileText className="w-5 h-5 text-indigo-600" />,
+      wishlist: <FiHeart className="w-5 h-5 text-red-500" />,
+      college: <FiHome className="w-5 h-5 text-green-600" />,
+      user: <FiUser className="w-5 h-5 text-blue-600" />,
+      document: <FiFolder className="w-5 h-5 text-orange-600" />,
+      payment: <FiCreditCard className="w-5 h-5 text-purple-600" />,
+      auth: <FiLock className="w-5 h-5 text-gray-600" />,
     };
-    return icons[resource.toLowerCase()] || "📋";
+    return icons[resource.toLowerCase()] || <FiList className="w-5 h-5 text-gray-600" />;
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "success": return <FiCheckCircle className="w-4 h-4 text-green-600" />;
+      case "failed": return <FiXCircle className="w-4 h-4 text-red-600" />;
+      default: return <FiClock className="w-4 h-4 text-yellow-600" />;
+    }
   };
 
   return (
     <DashboardLayout role="student" userName={user?.name}>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)]">Activity</h1>
-          <p className="text-[var(--color-text-muted)]">Track your recent activities</p>
+          <h1 className="text-2xl font-bold text-gray-900">Activity</h1>
+          <p className="text-sm text-gray-600">Track your recent activities</p>
         </div>
 
-        {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-[var(--color-text-muted)]">Total Activities</p>
-                <p className="text-2xl font-bold">{stats.totalActivities}</p>
+                <p className="text-sm text-gray-500">Total Activities</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalActivities}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-[var(--color-text-muted)]">Today</p>
-                <p className="text-2xl font-bold">{stats.todayActivities}</p>
+                <p className="text-sm text-gray-500">Today</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.todayActivities}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-<p className="text-sm text-[var(--color-text-muted)]">This Week</p>
+                <p className="text-sm text-gray-500">This Week</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.weekActivities}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-[var(--color-text-muted)]">This Month</p>
-                <p className="text-2xl font-bold">{stats.monthActivities}</p>
+                <p className="text-sm text-gray-500">This Month</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.monthActivities}</p>
               </CardContent>
             </Card>
           </div>
         )}
 
-        {/* Filters */}
         <div className="flex gap-4">
           <select
-            className="px-3 py-2 border border-[var(--color-border-strong)] rounded-lg"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-gray-700"
             value={actionFilter}
             onChange={(e) => {
               setActionFilter(e.target.value);
@@ -147,7 +159,7 @@ logout: "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]",
             <option value="view">View</option>
           </select>
           <select
-            className="px-3 py-2 border border-[var(--color-border-strong)] rounded-lg"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-gray-700"
             value={resourceFilter}
             onChange={(e) => {
               setResourceFilter(e.target.value);
@@ -163,65 +175,68 @@ logout: "bg-[var(--color-bg-muted)] text-[var(--color-text-secondary)]",
           </select>
         </div>
 
-        {/* Activity List */}
         <Card>
           <CardHeader>
             <CardTitle>Recent Activities</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-[var(--color-text-muted)]">Loading...</div>
+              <div className="text-center py-8 text-gray-500">Loading...</div>
             ) : activities.length === 0 ? (
-              <div className="text-center py-8 text-[var(--color-text-muted)]">No activities found</div>
+              <div className="text-center py-8 text-gray-500">No activities found</div>
             ) : (
               <div className="space-y-3">
                 {activities.map((activity) => (
                   <div
                     key={activity._id}
-                    className="flex items-start gap-4 p-4 bg-[var(--color-bg-muted)] rounded-lg"
+                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
                   >
-                    <span className="text-2xl">{getResourceIcon(activity.resource)}</span>
+                    <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center">
+                      {getResourceIcon(activity.resource)}
+                    </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         {getActionBadge(activity.action)}
-                        <span className="text-sm text-[var(--color-text-muted)]">{activity.resource}</span>
+                        <span className="text-sm text-gray-500">{activity.resource}</span>
                       </div>
-                      <p className="text-sm text-[var(--color-text-secondary)]">
+                      <p className="text-sm text-gray-700">
                         {activity.action} {activity.resource}
                         {activity.details?.collegeName && ` - ${activity.details.collegeName}`}
                       </p>
-                      <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         {formatDate(activity.createdAt)}
                       </p>
                     </div>
                     <Badge variant={activity.status === "success" ? "success" : "danger"}>
-                      {activity.status}
+                      {getStatusIcon(activity.status)}
+                      <span className="ml-1">{activity.status}</span>
                     </Badge>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Pagination */}
             {pagination.totalPages > 1 && (
               <div className="flex justify-center gap-2 mt-4">
-                <button
-                  className="px-3 py-1 border rounded disabled:opacity-50"
+                <Button
+                  variant="outline"
+                  size="sm"
                   disabled={pagination.page === 1}
                   onClick={() => fetchActivities(pagination.page - 1)}
                 >
-                  Previous
-                </button>
-                <span className="px-3 py-1">
+                  <FiArrowLeft className="w-4 h-4" /> Previous
+                </Button>
+                <span className="px-3 py-2 text-gray-600">
                   Page {pagination.page} of {pagination.totalPages}
                 </span>
-                <button
-                  className="px-3 py-1 border rounded disabled:opacity-50"
+                <Button
+                  variant="outline"
+                  size="sm"
                   disabled={pagination.page === pagination.totalPages}
                   onClick={() => fetchActivities(pagination.page + 1)}
                 >
-                  Next
-                </button>
+                  Next <FiArrowRight className="w-4 h-4" />
+                </Button>
               </div>
             )}
           </CardContent>

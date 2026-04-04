@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, Badge, Button, Modal, Spinner
 import { PaymentButton } from "@/features/payments";
 import { paymentService } from "@/features/payments/services/payment.service";
 import { formatDate } from "@/lib/utils";
+import { FiDollarSign, FiStar, FiFileText, FiCalendar, FiCreditCard, FiCheck, FiClock, FiX, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 
 interface Plan {
   plan: string;
@@ -73,6 +74,15 @@ function PaymentDashboardContent() {
     return variants[status] || variants.pending;
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "captured": return <FiCheckCircle className="w-5 h-5 text-green-600" />;
+      case "pending": return <FiClock className="w-5 h-5 text-yellow-600" />;
+      case "failed": return <FiX className="w-5 h-5 text-red-600" />;
+      default: return null;
+    }
+  };
+
   const totalSpent = orders
     .filter(o => o.status === "captured")
     .reduce((sum, o) => sum + o.amount, 0);
@@ -97,10 +107,10 @@ function PaymentDashboardContent() {
   };
 
   const stats = [
-    { label: "Total Spent", value: `₹${totalSpent.toLocaleString()}`, icon: "💰", color: "bg-green-50" },
-    { label: "Active Plan", value: currentPlan === "free" ? "Free" : currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1), icon: "⭐", color: "bg-yellow-50" },
-    { label: "Applications Left", value: currentPlan === "free" ? "2/5" : "Unlimited", icon: "📝", color: "bg-blue-50" },
-    { label: "Valid Until", value: getValidUntil() || "N/A", icon: "📅", color: "bg-purple-50" },
+    { label: "Total Spent", value: `₹${totalSpent.toLocaleString()}`, icon: FiDollarSign, color: "bg-green-50 text-green-600" },
+    { label: "Active Plan", value: currentPlan === "free" ? "Free" : currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1), icon: FiStar, color: "bg-yellow-50 text-yellow-600" },
+    { label: "Applications Left", value: currentPlan === "free" ? "2/5" : "Unlimited", icon: FiFileText, color: "bg-blue-50 text-blue-600" },
+    { label: "Valid Until", value: getValidUntil() || "N/A", icon: FiCalendar, color: "bg-purple-50 text-purple-600" },
   ];
 
   if (loading) {
@@ -118,24 +128,23 @@ function PaymentDashboardContent() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text)]">Payments & Plans</h1>
-            <p className="text-[var(--color-text-muted)]">Manage your subscriptions and payment history</p>
+            <h1 className="text-2xl font-bold text-gray-900">Payments & Plans</h1>
+            <p className="text-sm text-gray-600">Manage your subscriptions and payment history</p>
           </div>
           <Button onClick={() => setShowUpgrade(true)}>Upgrade Plan</Button>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {stats.map((stat) => (
             <Card key={stat.label} hover>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.color}`}>
-                    <span className="text-lg">{stat.icon}</span>
+                    <stat.icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
-                    <p className="text-xl font-bold text-[var(--color-text)]">{stat.value}</p>
+                    <p className="text-xs text-gray-500">{stat.label}</p>
+                    <p className="text-xl font-bold text-gray-900">{stat.value}</p>
                   </div>
                 </div>
               </CardContent>
@@ -143,7 +152,6 @@ function PaymentDashboardContent() {
           ))}
         </div>
 
-        {/* Current Plan */}
         {currentPlan !== "free" && (
           <Card className="bg-gradient-to-r from-indigo-50 to-indigo-100 border-indigo-200">
             <CardContent className="p-6">
@@ -162,7 +170,6 @@ function PaymentDashboardContent() {
           </Card>
         )}
 
-        {/* Payment History */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Payment History</CardTitle>
@@ -170,8 +177,10 @@ function PaymentDashboardContent() {
           <CardContent>
             {orders.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-4xl mb-4">💳</div>
-                <p className="text-[var(--color-text-muted)] mb-4">No payment history</p>
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                  <FiCreditCard className="w-8 h-8 text-gray-400" />
+                </div>
+                <p className="text-gray-500 mb-4">No payment history</p>
                 <Button onClick={() => setShowUpgrade(true)}>Upgrade Plan</Button>
               </div>
             ) : (
@@ -179,22 +188,22 @@ function PaymentDashboardContent() {
                 {orders.map((order) => {
                   const badge = getStatusBadge(order.status);
                   return (
-                    <div key={order._id} className="flex items-center justify-between p-4 border border-[var(--color-border)] rounded-xl">
+                    <div key={order._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-xl">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                           order.status === "captured" ? "bg-green-100" : order.status === "pending" ? "bg-yellow-100" : "bg-red-100"
                         }`}>
-                          <span className="text-lg">{order.status === "captured" ? "✓" : order.status === "pending" ? "⏳" : "✕"}</span>
+                          {getStatusIcon(order.status)}
                         </div>
                         <div>
-                          <p className="font-medium text-[var(--color-text)]">{order.plan.charAt(0).toUpperCase() + order.plan.slice(1)} Plan</p>
-                          <p className="text-sm text-[var(--color-text-muted)]">Order: {order.razorpayOrderId}</p>
-                          <p className="text-xs text-[var(--color-text-muted)]">{formatDate(order.createdAt)}</p>
+                          <p className="font-medium text-gray-900">{order.plan.charAt(0).toUpperCase() + order.plan.slice(1)} Plan</p>
+                          <p className="text-sm text-gray-500">Order: {order.razorpayOrderId}</p>
+                          <p className="text-xs text-gray-400">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-bold text-[var(--color-text)]">₹{order.amount}</p>
+                          <p className="font-bold text-gray-900">₹{order.amount}</p>
                           <Badge variant={badge.variant} size="sm">{badge.label}</Badge>
                         </div>
                         {order.razorpayPaymentId && (
@@ -209,25 +218,24 @@ function PaymentDashboardContent() {
           </CardContent>
         </Card>
 
-        {/* Upgrade Modal */}
         <Modal isOpen={showUpgrade} onClose={() => setShowUpgrade(false)} title="Upgrade Your Plan" size="lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {plans.map((plan) => (
               <div
                 key={plan.plan}
                 className={`p-4 rounded-xl border-2 ${
-                  plan.plan === "premium" ? "border-primary-500 bg-[var(--color-primary-50)]" : "border-[var(--color-border)]"
+                  plan.plan === "premium" ? "border-indigo-500 bg-indigo-50" : "border-gray-200"
                 }`}
               >
                 {plan.plan === "premium" && (
                   <Badge variant="primary" className="mb-2">Recommended</Badge>
                 )}
-                <h3 className="text-xl font-bold text-[var(--color-text)]">{plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)}</h3>
+                <h3 className="text-xl font-bold text-gray-900">{plan.plan.charAt(0).toUpperCase() + plan.plan.slice(1)}</h3>
                 <p className="text-2xl font-bold text-indigo-600 mt-2">₹{plan.amount}</p>
                 <ul className="mt-4 space-y-2">
                   {getPlanFeatures(plan.plan).map((feature, idx) => (
-                    <li key={idx} className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
-                      <span>✓</span> {feature}
+                    <li key={idx} className="text-sm text-gray-600 flex items-center gap-2">
+                      <FiCheck className="w-4 h-4 text-green-500" /> {feature}
                     </li>
                   ))}
                 </ul>

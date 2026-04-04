@@ -7,7 +7,7 @@ import { DashboardLayout } from "@/components/layout";
 import { ProtectedRoute, useAuth } from "@/features/auth";
 import { Card, CardContent, CardHeader, CardTitle, Button, Badge, Input } from "@/components/ui";
 import { useColleges } from "@/features/colleges";
-import { useAddToWishlist, useCheckWishlist } from "@/features/wishlist/hooks/useWishlist";
+import { FiStar, FiX, FiPlus, FiSearch, FiMapPin, FiHome, FiTrendingUp } from "react-icons/fi";
 
 interface CompareItem {
   _id: string;
@@ -81,7 +81,7 @@ export default function ComparePage() {
   const comparisonFields = [
     { label: "Type", key: "type" },
     { label: "Location", key: "location" },
-    { label: "Rating", key: "rating", render: (v: number) => v ? `⭐ ${v}/5` : "N/A" },
+    { label: "Rating", key: "rating", render: (v: number) => v ? <span className="flex items-center gap-1"><FiStar className="w-4 h-4 text-yellow-500" /> {v}/5</span> : "N/A" },
     { label: "Established", key: "established" },
     { label: "Course Fees", key: "fees" },
     { label: "Top Courses", key: "courses", render: (v: string[]) => v?.join(", ") || "N/A" },
@@ -92,15 +92,14 @@ export default function ComparePage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text)]">Compare Colleges</h1>
-            <p className="text-[var(--color-text-muted)]">Compare up to 4 colleges side by side</p>
+            <h1 className="text-2xl font-bold text-gray-900">Compare Colleges</h1>
+            <p className="text-sm text-gray-600">Compare up to 4 colleges side by side</p>
           </div>
-          <Button onClick={() => setShowSearch(!showSearch)}>
+          <Button onClick={() => setShowSearch(!showSearch)} leftIcon={showSearch ? <FiX className="w-4 h-4" /> : <FiPlus className="w-4 h-4" />}>
             {showSearch ? "Close Search" : "Add College"}
           </Button>
         </div>
 
-        {/* Search Modal */}
         {showSearch && (
           <Card>
             <CardHeader>
@@ -114,19 +113,21 @@ export default function ComparePage() {
               />
               <div className="max-h-64 overflow-y-auto space-y-2">
                 {isLoading ? (
-                  <p className="text-center py-4 text-[var(--color-text-muted)]">Loading...</p>
+                  <p className="text-center py-4 text-gray-500">Loading...</p>
                 ) : ((collegesData as any)?.data || []).length === 0 ? (
-                  <p className="text-center py-4 text-[var(--color-text-muted)]">No colleges found</p>
+                  <p className="text-center py-4 text-gray-500">No colleges found</p>
                 ) : (
                   ((collegesData as any)?.data || []).map((college: any) => (
                     <div
                       key={college._id}
-                      className="flex items-center justify-between p-3 bg-[var(--color-bg-muted)] rounded-lg hover:bg-[var(--color-border-subtle)] cursor-pointer"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
                       onClick={() => addToCompare(college)}
                     >
                       <div>
-                        <p className="font-medium">{college.name}</p>
-                        <p className="text-sm text-[var(--color-text-muted)]">{college.location?.city}, {college.location?.state}</p>
+                        <p className="font-medium text-gray-900">{college.name}</p>
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                          <FiMapPin className="w-3 h-3" /> {college.location?.city}, {college.location?.state}
+                        </p>
                       </div>
                       <Badge variant="secondary">{college.type}</Badge>
                     </div>
@@ -137,13 +138,14 @@ export default function ComparePage() {
           </Card>
         )}
 
-        {/* Compare Table */}
         {compareList.length === 0 ? (
           <Card>
             <CardContent className="p-12 text-center">
-              <div className="text-6xl mb-4">⚖️</div>
-              <h3 className="text-lg font-semibold mb-2">No Colleges to Compare</h3>
-              <p className="text-[var(--color-text-muted)] mb-4">Add colleges from your wishlist or search to compare them</p>
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                <FiTrendingUp className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Colleges to Compare</h3>
+              <p className="text-gray-500 mb-4">Add colleges from your wishlist or search to compare them</p>
               <Button onClick={() => setShowSearch(true)}>Add College</Button>
             </CardContent>
           </Card>
@@ -152,22 +154,22 @@ export default function ComparePage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-[var(--color-bg-muted)] border-b">
-                    <th className="text-left p-4 font-medium text-[var(--color-text-secondary)]">Feature</th>
+                  <tr className="bg-gray-50 border-b">
+                    <th className="text-left p-4 font-medium text-gray-600">Feature</th>
                     {compareList.map((college) => (
                       <th key={college._id} className="text-left p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-semibold">{college.name}</p>
-                            <p className="text-xs text-[var(--color-text-muted)]">{college.city}</p>
+                            <p className="font-semibold text-gray-900">{college.name}</p>
+                            <p className="text-xs text-gray-500">{college.city}</p>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-red-500"
+                            className="text-red-500 hover:text-red-600 hover:bg-red-50"
                             onClick={() => removeFromCompare(college._id)}
                           >
-                            ✕
+                            <FiX className="w-4 h-4" />
                           </Button>
                         </div>
                       </th>
@@ -176,10 +178,10 @@ export default function ComparePage() {
                 </thead>
                 <tbody>
                   {comparisonFields.map((field) => (
-                    <tr key={field.key} className="border-b border-[var(--color-border-subtle)]">
-                      <td className="p-4 font-medium text-[var(--color-text-secondary)]">{field.label}</td>
+                    <tr key={field.key} className="border-b border-gray-200">
+                      <td className="p-4 font-medium text-gray-600">{field.label}</td>
                       {compareList.map((college: any) => (
-                        <td key={college._id} className="p-4">
+                        <td key={college._id} className="p-4 text-gray-900">
                           {field.render 
                             ? field.render(college[field.key as keyof typeof college])
                             : (college[field.key as keyof typeof college] || "N/A")
@@ -189,7 +191,7 @@ export default function ComparePage() {
                     </tr>
                   ))}
                   <tr>
-                    <td className="p-4 font-medium text-[var(--color-text-secondary)]">Actions</td>
+                    <td className="p-4 font-medium text-gray-600">Actions</td>
                     {compareList.map((college) => (
                       <td key={college._id} className="p-4">
                         <Link href={`/colleges/${college._id}`}>

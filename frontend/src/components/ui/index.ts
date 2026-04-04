@@ -15,3 +15,4 @@ export { StatCard } from "./stat-card";
 export { Skeleton, TableSkeleton, CardSkeleton, ChartSkeleton } from "./skeleton";
 export { ToastProvider, useToast } from "./toast";
 export { FileUpload } from "./file-upload";
+export { Switch, type SwitchProps } from "./switch";
